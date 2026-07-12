@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Inclui a biblioteca oficial do Supabase para ligação à Nuvem -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @media print {
@@ -24,6 +25,7 @@
 </head>
 <body class="bg-slate-950 text-white font-sans antialiased min-h-screen p-6 md:p-12">
 
+    <!-- Security Auth Gate Layer Screen -->
     <div id="auth-gate-screen" class="fixed inset-0 bg-slate-950 z-[9999] flex flex-col items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-6">
             <div class="space-y-2">
@@ -39,8 +41,10 @@
         </div>
     </div>
 
+    <!-- MAIN APP WRAPPER (Hidden until authorized dynamically) -->
     <div id="main-admin-app-content" class="hidden max-w-7xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
         
+        <!-- Header -->
         <div class="p-8 border-b border-slate-800 bg-slate-900/50 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div class="flex items-center space-x-3">
                 <span class="text-3xl">⚙️</span>
@@ -55,6 +59,7 @@
             </div>
         </div>
 
+        <!-- Tabs Navigation -->
         <div class="bg-slate-950 border-b border-slate-800 flex flex-wrap text-sm font-medium">
             <button onclick="switchTab('calendar-tab')" id="btn-calendar-tab" class="tab-btn px-6 py-4 border-b-2 border-amber-600 text-amber-600 focus:outline-none transition-all">Controlo de Disponibilidade</button>
             <button onclick="switchTab('allocation-tab')" id="btn-allocation-tab" class="tab-btn px-6 py-4 border-b-2 border-transparent text-slate-400 hover:text-white focus:outline-none transition-all">Visual Allocation Map</button>
@@ -69,6 +74,7 @@
         </div>
 
         <div class="p-8">
+            <!-- VIEW 1 -->
             <div id="calendar-tab" class="tab-content space-y-8">
                 <div class="space-y-4">
                     <h4 class="text-base font-semibold text-stone-200 uppercase tracking-wider">Manual Block/Override Matrix</h4>
@@ -109,6 +115,7 @@
                 </div>
             </div>
 
+            <!-- VIEW 2 -->
             <div id="allocation-tab" class="tab-content hidden space-y-6">
                 <div class="bg-slate-950 p-6 border border-slate-800 rounded-xl space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-4">
@@ -130,6 +137,7 @@
                 </div>
             </div>
 
+            <!-- TAB LISTINGS -->
             <div id="pending-tab" class="tab-content hidden space-y-4"><div id="list-pending" class="grid grid-cols-1 gap-4"></div></div>
             <div id="accepted-tab" class="tab-content hidden space-y-4"><div id="list-accepted" class="grid grid-cols-1 gap-4"></div></div>
             <div id="disabled-tab" class="tab-content hidden space-y-4"><div id="list-denied" class="grid grid-cols-1 gap-4"></div></div>
@@ -137,6 +145,7 @@
         </div>
     </div>
 
+    <!-- MODALS -->
     <div id="villa-select-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-md p-6 rounded-2xl shadow-2xl space-y-6">
             <div><h4 class="text-lg font-bold text-stone-100">Allocate Villa Units (Step 1/2)</h4></div>
@@ -177,15 +186,13 @@
 
     <script>
         // --- SECURE CRYPTOGRAPHIC AUTHENTICATION ENGINE ---
-        // Normalização UTF-8 direta para aceitar perfeitamente o carácter especial 'Ç'
-        const TARGET_PASS_HASH = "b4c2b921ea022de61fe04f81016fe2c2bcbe0e2e50ad5c0c9d72a74c77176d65";
+        // Fingerprint representation hash matching exactly '10895525JmX' over strict environments
+        const TARGET_PASS_HASH = "81baeb23a1a6bfb33d077c4db96c70281b3701da5260195ee02283995804ee90";
 
         async function validateAdminGateCredentials() {
             const inputField = document.getElementById('auth-gate-pin-input');
             const errorMsg = document.getElementById('auth-gate-error-msg');
-            
-            // Força a normalização do texto inserido para bater exatamente com a assinatura
-            const passwordAttempt = inputField.value.normalize("NFC");
+            const passwordAttempt = inputField.value;
 
             const msgBuffer = new TextEncoder().encode(passwordAttempt);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -208,6 +215,7 @@
         });
 
         // --- CENTRAL CLOUD CONNECTION CREDENTIALS ---
+        // Certifique-se de recolocar aqui o URL e Chave do seu projeto Supabase
         const SUPABASE_URL = "https://waemewnmvzrsxaedygus.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_2MIqzJ-N5DOdh4z0eOYNcA_O-9nkMex";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
