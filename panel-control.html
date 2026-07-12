@@ -328,7 +328,7 @@
             let start = new Date(startDateStr); let end = new Date(endDateStr);
             let occupied = new Set();
             localReservations.forEach(res => {
-                if(res.status === 'accepted' && res.id !== ignoreResId && res.assignedVillas && res.dates the.includes(' to ')) {
+                if(res.status === 'accepted' && res.id !== ignoreResId && res.assignedVillas && res.dates.includes(' to ')) {
                     const parts = res.dates.split(' to ');
                     if(start <= new Date(parts[1]) && end >= new Date(parts[0])) {
                         res.assignedVillas.forEach(vNum => occupied.add(parseInt(vNum)));
