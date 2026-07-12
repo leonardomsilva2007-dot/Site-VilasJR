@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferraz da Silva & Marques, Lda | Vilas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Flatpickr Advanced Calendar Engine CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <!-- International Telephone Input Flags Extension CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/css/intl-tel-input.css">
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/intl-tel-input.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        slate: {
+                            900: '#0f172a',
+                            950: '#020617'
+                        },
+                        stone: {
+                            100: '#f5f5f4',
+                            200: '#e7e5e4'
+                        },
+                        emerald: {
+                            700: '#047857',
+                            800: '#065f46'
+                        },
+                        amber: {
+                            600: '#d97706'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gallery-img {
+            cursor: pointer;
+            transition: transform 0.5s ease;
+        }
+        .gallery-img:hover {
+            transform: scale(1.03);
+        }
+        
+        /* Advanced Custom Calendar Highlight Adjustments */
+        .calendar-fully-booked {
+            background-color: #fee2e2 !important;
+            color: #ef4444 !important;
+            text-decoration: line-through !important;
+            font-weight: 600 !important;
+            border-radius: 4px !important;
+        }
+        .calendar-almost-full {
+            background-color: #fef3c7 !important;
+            color: #d97706 !important;
+            font-weight: 600 !important;
+            border-radius: 4px !important;
+        }
+
+        /* Flag drop container specific layout positioning adjustments */
+        .iti { width: 100% !important; }
+        .iti__country-list { background-color: #ffffff !important; color: #0f172a !important; max-width: 300px !important; text-align: left !important; }
+        
+        /* Ensures the separated dial code (+351) matches your Tailwind text styling */
+        .iti__selected-dial-code { color: #0f172a !important; font-weight: 500 !important; margin-left: 4px; }
+
+        /* Smooth transition for Accordion */
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        }
+
+        /* WhatsApp Pulse Effect Animation */
+        @keyframes wppulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(4, 120, 87, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(4, 120, 87, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(4, 120, 87, 0); }
+        }
+        .btn-whatsapp-pulse {
+            animation: wppulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-slate-900 font-sans antialiased selection:bg-emerald-700 selection:text-white">
+
+    <!-- Navigation Bar -->
+    <nav class="fixed w-full z-50 bg-stone-100/90 backdrop-blur-md shadow-sm transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl md:text-2xl font-serif font-bold text-slate-900 tracking-tight">
+                Ferraz da Silva & Marques, Lda <span class="text-emerald-700">| Vilas</span>
+            </a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden lg:flex items-center space-x-8">
+                <a href="#the-villa" class="text-sm font-medium text-slate-900 hover:text-emerald-700 transition-colors" data-en="The Villa" data-pt="A Vila">The Villa</a>
+                <a href="#features" class="text-sm font-medium text-slate-900 hover:text-emerald-700 transition-colors" data-en="Features" data-pt="Características">Features</a>
+                <a href="#reviews" class="text-sm font-medium text-slate-900 hover:text-emerald-700 transition-colors" data-en="Reviews" data-pt="Avaliações">Reviews</a>
+                <a href="#gallery-expanded" class="text-sm font-medium text-slate-900 hover:text-emerald-700 transition-colors" data-en="The Estate" data-pt="A Propriedade">The Estate</a>
+                <a href="#location" class="text-sm font-medium text-slate-900 hover:text-emerald-700 transition-colors" data-en="Location" data-pt="Localização">Location</a>
+                <a href="#luxury-amenities" class="text-sm font-medium text-slate-900 hover:text-emerald-700 transition-colors" data-en="Luxury Amenities" data-pt="Comodidades de Luxo">Luxury Amenities</a>
+                <a href="#faq" class="text-sm font-medium text-slate-900 hover:text-emerald-700 transition-colors" data-en="FAQs" data-pt="Perguntas Frequentes">FAQs</a>
+                
+                <!-- Language Toggle Button -->
+                <button id="lang-switcher" class="text-xs font-bold border border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white px-3 py-1.5 rounded transition-colors tracking-wider">
+                    PT
+                </button>
+
+                <button onclick="openBookingEngine()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-2.5 rounded-md font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5" data-en="Book Your Stay" data-pt="Reservar Estadia">Book Your Stay</button>
+            </div>
+
+            <!-- Mobile Menu Tools -->
+            <div class="flex items-center space-x-4 lg:hidden">
+                <button id="lang-switcher-mobile" class="text-xs font-bold border border-slate-900 text-slate-900 px-2 py-1 rounded">
+                    PT
+                </button>
+                <button id="mobile-menu-btn" class="text-slate-900 focus:outline-none">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-stone-100 border-t border-stone-200 absolute w-full shadow-lg z-40">
+            <div class="flex flex-col px-6 py-4 space-y-4">
+                <a href="#the-villa" class="mobile-link text-base font-medium text-slate-900" data-en="The Villa" data-pt="A Vila">The Villa</a>
+                <a href="#features" class="mobile-link text-base font-medium text-slate-900" data-en="Features" data-pt="Características">Features</a>
+                <a href="#reviews" class="mobile-link text-base font-medium text-slate-900" data-en="Reviews" data-pt="Avaliações">Reviews</a>
+                <a href="#gallery-expanded" class="mobile-link text-base font-medium text-slate-900" data-en="The Estate" data-pt="A Propriedade">The Estate</a>
+                <a href="#location" class="mobile-link text-base font-medium text-slate-900" data-en="Location" data-pt="Localização">Location</a>
+                <a href="#luxury-amenities" class="mobile-link text-base font-medium text-slate-900" data-en="Luxury Amenities" data-pt="Comodidades de Luxo">Luxury Amenities</a>
+                <a href="#faq" class="mobile-link text-base font-medium text-slate-900" data-en="FAQs" data-pt="Perguntas Frequentes">FAQs</a>
+                <button onclick="openBookingEngine(); document.getElementById('mobile-menu').classList.add('hidden');" class="mobile-link bg-emerald-700 text-white px-4 py-3 rounded-md font-medium text-center" data-en="Book Your Stay" data-pt="Reservar Estadia">Book Your Stay</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative h-screen flex items-center justify-center pt-20">
+        <div class="absolute inset-0 z-0 overflow-hidden bg-slate-900">
+            <img src="104d1259-5393-439d-8418-3d707aff0e91.jpg" alt="Modern Villa Exterior" class="w-full h-full object-cover opacity-70 gallery-img" data-index="0">
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-900/40 via-transparent to-slate-900/80"></div>
+        </div>
+        
+        <div class="relative z-10 text-center px-6 max-w-5xl mx-auto flex flex-col items-center">
+            <div class="inline-block bg-amber-600/90 text-white text-xs font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6 shadow-md backdrop-blur-sm">
+                <span data-en="Premium 2-Bedroom Villas From 200€ / Night" data-pt="Vilas Premium de 2 Quartos Desde 200€ / Noite">Premium 2-Bedroom Villas From 200€ / Night</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-white mb-6 leading-tight drop-shadow-lg" data-en="Experience Contemporary Luxury in the Heart of Nature" data-pt="Viva o Luxo Contemporâneo no Coração da Natureza">
+                Experience Contemporary Luxury in the Heart of Nature
+            </h1>
+            <p class="text-lg md:text-2xl text-stone-100 mb-10 font-light drop-shadow-md max-w-3xl mx-auto" data-en="A private sanctuary designed for architectural elegance, serene comfort, and unforgettable escapes." data-pt="Um santuário privado concebido para a elegância arquitetónica, conforto sereno e refúgios inesquecíveis.">
+                A private sanctuary designed for architectural elegance, serene comfort, and unforgettable escapes.
+            </p>
+            
+            <button onclick="openBookingEngine()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-lg font-medium tracking-wide px-12 py-4 rounded-lg shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-0.5 uppercase z-10 relative">
+                <span data-en="Plan & Book Your Stay" data-pt="Planeie & Reserve a sua Estadia">Plan & Book Your Stay</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- The Property Section -->
+    <section id="the-villa" class="py-32 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="order-2 lg:order-1">
+                <h2 class="text-3xl md:text-5xl font-serif font-bold text-slate-900 mb-8 leading-tight" data-en="Where Interior Elegance Meets Endless Horizons" data-pt="Onde a Elegância Interior Encontra Horizontes Infinitos">
+                    Where Interior Elegance Meets Endless Horizons
+                </h2>
+                <div class="space-y-6 text-lg text-slate-700 font-light leading-relaxed">
+                    <p data-en="Discover a seamless integration of sophisticated design and the raw beauty of the landscape. Our estate features 6 identical premium 2-bedroom private houses, each offering absolute isolation and refinement. The massive floor-to-ceiling glass facades eliminate boundaries, allowing natural light to flood the living spaces." data-pt="Descubra uma integração perfeita de design sofisticado e a beleza natural da paisagem. A nossa propriedade dispõe de 6 casas privadas idênticas de tipologia T2, oferecendo isolamento e requinte absolutos. As massivas fachadas de vidro do chão ao teto eliminam barreiras, permitindo que a luz inunde os espaços.">
+                        Discover a seamless integration of sophisticated design and the raw beauty of the landscape. Our estate features 6 identical premium 2-bedroom private houses, each offering absolute isolation and refinement. The massive floor-to-ceiling glass facades eliminate boundaries, allowing natural light to flood the living spaces.
+                    </p>
+                </div>
+            </div>
+            <div class="order-1 lg:order-2 relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl group">
+                <img src="531bbcfb-9d01-4e88-8803-d8431699252c.jpg" alt="Panoramic Valley Views" class="w-full h-full object-cover gallery-img" data-index="1">
+            </div>
+        </div>
+    </section>
+
+    <!-- Interior Masterclass Section -->
+    <section id="features" class="py-24 bg-stone-200 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-serif font-bold text-slate-900 mb-6" data-en="Interior Masterclass" data-pt="Masterclass de Interiores">Interior Masterclass</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-stone-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow group">
+                    <div class="h-72 overflow-hidden relative">
+                        <img src="11274266-552a-4117-a528-88f793efadf9.png" alt="The Master Suite" class="w-full h-full object-cover gallery-img" data-index="2">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-serif font-bold text-slate-900 mb-3 group-hover:text-amber-600 transition-colors" data-en="The Master Suite" data-pt="A Suite Master">The Master Suite</h3>
+                        <p class="text-slate-700 font-light leading-relaxed" data-en="Wake up directly looking out onto serene, sun-drenched gardens through pristine panoramic sliding glass doors." data-pt="Acorde olhando diretamente para jardins serenos e ensolarados através de impecáveis portas de vidro de correr panorâmicas.">Wake up directly looking out onto serene, sun-drenched gardens through pristine panoramic sliding glass doors.</p>
+                    </div>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="bg-stone-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow group">
+                    <div class="h-72 overflow-hidden relative">
+                        <img src="f01b31e1-9607-4fa5-b090-c685765d2004.png" alt="The Lounge Room" class="w-full h-full object-cover gallery-img" data-index="3">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-serif font-bold text-slate-900 mb-3 group-hover:text-amber-600 transition-colors" data-en="The Lounge Room" data-pt="A Sala de Estar">The Lounge Room</h3>
+                        <p class="text-slate-700 font-light leading-relaxed" data-en="Unwind on our deep-set, premium L-shaped sectional sofa seamlessly connected to the outdoor terraces. Equipped with integrated climate control." data-pt="Descontraia no nosso confortável sofá seccional premium em forma de L, perfeitamente ligado aos terraços exteriores. Equipado com climatização integrada.">Unwind on our deep-set, premium L-shaped sectional sofa seamlessly connected to the outdoor terraces. Equipped with integrated climate control.</p>
+                    </div>
+                </div>
+                
+                <!-- Card 3 -->
+                <div class="bg-stone-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow group">
+                    <div class="h-72 overflow-hidden relative">
+                        <img src="d2ff70b2-d6e9-4d4c-bd5a-ef46f6c48a5e.jpg" alt="The Gourmet Kitchen" class="w-full h-full object-cover gallery-img" data-index="4">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-serif font-bold text-slate-900 mb-3 group-hover:text-amber-600 transition-colors" data-en="The Gourmet Kitchen" data-pt="A Cozinha Gourmet">The Gourmet Kitchen</h3>
+                        <p class="text-slate-700 font-light leading-relaxed" data-en="A fully-equipped modern culinary workspace featuring custom warm wood grain cabinetry, stone countertops, integrated appliances, and a marble-veined backsplash." data-pt="Um espaço culinário moderno totalmente equipado com armários de madeira quente personalizados, bancadas de pedra, eletrodomésticos embutidos e um painel traseiro com veios de mármore.">A fully-equipped modern culinary workspace featuring custom warm wood grain cabinetry, stone countertops, integrated appliances, and a marble-veined backsplash.</p>
+                    </div>
+                </div>
+                
+                <!-- Card 4 -->
+                <div class="bg-stone-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow group">
+                    <div class="h-72 overflow-hidden relative">
+                        <img src="a080ef53-c6d2-4982-966a-d4ef0da44604.png" alt="Open-Concept Flow" class="w-full h-full object-cover gallery-img" data-index="5">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-serif font-bold text-slate-900 mb-3 group-hover:text-amber-600 transition-colors" data-en="Open-Concept Flow" data-pt="Fluidez de Conceito Aberto">Open-Concept Flow</h3>
+                        <p class="text-slate-700 font-light leading-relaxed" data-en="Intuitively laid out interior transitions that foster social interaction while retaining absolute privacy for individual suites." data-pt="Transições interiores dispostas intuitivamente que promovem a interação social mantendo a privacidade absoluta para as suites individuais.">Intuitively laid out interior transitions that foster social interaction while retaining absolute privacy for individual suites.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: Social Proof & Reviews -->
+    <section id="reviews" class="py-24 bg-stone-100 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-emerald-700 font-bold tracking-widest uppercase text-xs mb-3 block" data-en="Guest Testimonials" data-pt="Testemunhos dos Hóspedes">Guest Testimonials</span>
+                <h2 class="text-3xl md:text-5xl font-serif font-bold text-slate-900" data-en="Stories of Absolute Isolation" data-pt="Histórias de Isolamento Absoluto">Stories of Absolute Isolation</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Review 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md border border-stone-200/60 flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-amber-600 mb-4">
+                            <span>★★★★★</span>
+                        </div>
+                        <p class="text-slate-700 font-light italic leading-relaxed mb-6"
+                           data-en="&ldquo;An architectural masterpiece. The complete silence and isolation of our villa provided the mental reset we desperately needed. Having our own traditional barbecue was perfect for summer evenings.&rdquo;"
+                           data-pt="&ldquo;Uma obra-prima arquitetónica. O silêncio e isolamento completo da nossa vila proporcionaram o reset mental que tanto precisávamos. Ter a nossa própria churrasqueira tradicional foi perfeito para as noites de verão.&rdquo;">
+                            &ldquo;An architectural masterpiece. The complete silence and isolation of our villa provided the mental reset we desperately needed. Having our own traditional barbecue was perfect for summer evenings.&rdquo;
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between border-t border-stone-100 pt-4">
+                        <span class="font-serif font-bold text-slate-900 text-base">Charlotte & Henrik</span>
+                        <span class="text-xs font-semibold tracking-wider text-emerald-700 bg-stone-100 px-2.5 py-1 rounded-full uppercase" data-en="Germany" data-pt="Alemanha">Germany</span>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md border border-stone-200/60 flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-amber-600 mb-4">
+                            <span>★★★★★</span>
+                        </div>
+                        <p class="text-slate-700 font-light italic leading-relaxed mb-6"
+                           data-en="&ldquo;Exquisite space. The main swimming pool serves the 6 houses beautifully, maintaining a very calm, exclusive atmosphere. Highly recommend for families seeking independent luxury.&rdquo;"
+                           data-pt="&ldquo;Espaço requintado. A piscina principal serve as 6 casas perfeitamente, mantendo um ambiente muito calmo e exclusivo. Recomendo vivamente para famílias que procuram luxo independente.&rdquo;">
+                            &ldquo;Exquisite space. The main swimming pool serves the 6 houses beautifully, maintaining a very calm, exclusive atmosphere. Highly recommend for families seeking independent luxury.&rdquo;
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between border-t border-stone-100 pt-4">
+                        <span class="font-serif font-bold text-slate-900 text-base">Sérgio Marinho</span>
+                        <span class="text-xs font-semibold tracking-wider text-emerald-700 bg-stone-100 px-2.5 py-1 rounded-full uppercase" data-en="Portugal" data-pt="Portugal">Portugal</span>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md border border-stone-200/60 flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-amber-600 mb-4">
+                            <span>★★★★★</span>
+                        </div>
+                        <p class="text-slate-700 font-light italic leading-relaxed mb-6"
+                           data-en="&ldquo;The perfect remote office and sanctuary combined. Impeccable high-speed Wi-Fi, premium interior comfort, and a private traditional grill where we cooked every night. Absolute peace.&rdquo;"
+                           data-pt="&ldquo;O escritório remoto e santuário perfeito combinados. Wi-Fi de alta velocidade impecável, conforto interior premium e uma churrasqueira privada onde cozinhámos todas as noites. Paz absoluta.&rdquo;">
+                            &ldquo;The perfect remote office and sanctuary combined. Impeccable high-speed Wi-Fi, premium interior comfort, and a private traditional grill where we cooked every night. Absolute peace.&rdquo;
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between border-t border-stone-100 pt-4">
+                        <span class="font-serif font-bold text-slate-900 text-base">Alister & Maeve</span>
+                        <span class="text-xs font-semibold tracking-wider text-emerald-700 bg-stone-100 px-2.5 py-1 rounded-full uppercase" data-en="United Kingdom" data-pt="Reino Unido">United Kingdom</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: Expanded Photo Gallery (The Estate Spaces) -->
+    <section id="gallery-expanded" class="py-24 bg-stone-200 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-emerald-700 font-bold tracking-widest uppercase text-xs mb-3 block" data-en="Outdoor Spaces" data-pt="Espaços Exteriores">Outdoor Spaces</span>
+                <h2 class="text-3xl md:text-5xl font-serif font-bold text-slate-900" data-en="The Estate & Amenities Portfolio" data-pt="O Portefólio da Propriedade & Comodidades">O Portefólio da Propriedade & Comodidades</h2>
+            </div>
+
+            <!-- Asymmetrical Bento Grid Design -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[240px]">
+                <!-- Item 1: Large Box (Shared Swimming Pool) -->
+                <div class="md:col-span-2 md:row-span-2 relative rounded-3xl overflow-hidden shadow-md group">
+                    <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=1200&auto=format&fit=crop" alt="Shared Swimming Pool" class="w-full h-full object-cover gallery-img" data-index="8">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent pointer-events-none"></div>
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <h4 class="text-xl font-serif font-bold text-white mb-1" data-en="Central Estate Swimming Pool" data-pt="Piscina Central da Propriedade">Central Estate Swimming Pool</h4>
+                        <p class="text-stone-200 text-xs font-light" data-en="A magnificent shared pool layout designed for leisure and relaxation, serving our 6 exclusive villas." data-pt="Uma magnífica piscina partilhada desenhada para o lazer e relaxamento, servindo as nossas 6 vilas exclusivas.">A magnificent shared pool layout designed for leisure and relaxation, serving our 6 exclusive villas.</p>
+                    </div>
+                </div>
+
+                <!-- Item 2: Landscape Box (Traditional Barbecue) -->
+                <div class="md:col-span-2 md:row-span-1 relative rounded-3xl overflow-hidden shadow-md group">
+                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200&auto=format&fit=crop" alt="Traditional Portuguese Barbecue" class="w-full h-full object-cover gallery-img" data-index="9">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent pointer-events-none"></div>
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <h4 class="text-lg font-serif font-bold text-white mb-0.5" data-en="Private Traditional Barbecue" data-pt="Churrasqueira Tradicional Privada">Private Traditional Barbecue</h4>
+                        <p class="text-stone-200 text-xs font-light" data-en="Each individual house features its own classic brick-built grill space." data-pt="Cada casa individual dispõe do seu próprio espaço clássico de grelhados em tijolo.">Each individual house features its own classic brick-built grill space.</p>
+                    </div>
+                </div>
+
+                <!-- Item 3: Small Box (Surrounding Serene Gardens) -->
+                <div class="md:col-span-1 md:row-span-1 relative rounded-3xl overflow-hidden shadow-md group">
+                    <img src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=800&auto=format&fit=crop" alt="Serene Gardens Architecture" class="w-full h-full object-cover gallery-img" data-index="10">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent pointer-events-none"></div>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <h4 class="text-sm font-serif font-bold text-white" data-en="Surrounding Nature" data-pt="Natureza Envolvente">Surrounding Nature</h4>
+                    </div>
+                </div>
+
+                <!-- Item 4: Small Box (Villa Solarium Deck) -->
+                <div class="md:col-span-1 md:row-span-1 relative rounded-3xl overflow-hidden shadow-md group">
+                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800&auto=format&fit=crop" alt="Private Sun Solarium" class="w-full h-full object-cover gallery-img" data-index="11">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent pointer-events-none"></div>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <h4 class="text-sm font-serif font-bold text-white" data-en="Private Outdoor Decks" data-pt="Decks Exteriores Privados">Private Outdoor Decks</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: Location & Points of Interest -->
+    <section id="location" class="py-24 bg-stone-100 px-6 border-t border-stone-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-emerald-700 font-bold tracking-widest uppercase text-xs mb-3 block" data-en="Map & Surroundings" data-pt="Mapa & Envolvente">Map & Surroundings</span>
+                <h2 class="text-3xl md:text-5xl font-serif font-bold text-slate-900" data-en="Where to Find Us" data-pt="Onde Nos Encontrar">Onde Nos Encontrar</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
+                <!-- Map Container -->
+                <div class="lg:col-span-2 w-full h-[450px] rounded-3xl overflow-hidden shadow-xl border border-stone-200">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2984.7477919408443!2d-8.576491624783346!3d41.574702784356845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd2453397bf59093%3A0x6185332344d98227!2sferraz%20da%20silva%20%26%20Marques%2Clda!5e0!3m2!1spt-PT!2spt!4v1780494793830!5m2!1spt-PT!2spt" class="w-full h-full" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+
+                <!-- Points of Interest List -->
+                <div class="space-y-8 p-4">
+                    <div>
+                        <h3 class="text-2xl font-serif font-bold text-slate-900 mb-2" data-en="Strategic Position" data-pt="Posição Estratégica">Strategic Position</h3>
+                        <p class="text-slate-600 font-light text-sm leading-relaxed" data-en="Enjoy maximum privacy and deep rural isolation while staying seamlessly connected to northern Portugal's key road infrastructures." data-pt="Desfrute do máximo isolamento rural e privacidade, mantendo-se perfeitamente ligado às principais infraestruturas rodoviárias do norte de Portugal.">Enjoy maximum privacy and deep rural isolation while staying seamlessly connected.</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <span class="text-lg mt-0.5">📍</span>
+                            <div>
+                                <h4 class="font-serif font-bold text-slate-900 text-base" data-en="Braga Historic Centre" data-pt="Centro Histórico de Braga">Centro Histórico de Braga</h4>
+                                <p class="text-xs text-stone-500 font-medium" data-en="~ 15 minutes drive" data-pt="~ 15 minutos de carro">~ 15 minutes drive</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <span class="text-lg mt-0.5">🌲</span>
+                            <div>
+                                <h4 class="font-serif font-bold text-slate-900 text-base" data-en="Peneda-Gerês National Park" data-pt="Parque Nacional da Peneda-Gerês">Parque Nacional da Peneda-Gerês</h4>
+                                <p class="text-xs text-stone-500 font-medium" data-en="~ 35 minutes drive" data-pt="~ 35 minutos de carro">~ 35 minutos de carro</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <span class="text-lg mt-0.5">✈️</span>
+                            <div>
+                                <h4 class="font-serif font-bold text-slate-900 text-base" data-en="Porto Airport (OPO)" data-pt="Aeroporto do Porto (OPO)">Aeroporto do Porto (OPO)</h4>
+                                <p class="text-xs text-stone-500 font-medium" data-en="~ 45 minutes drive" data-pt="~ 45 minutos de carro">~ 45 minutes drive</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Signature Luxury Section -->
+    <section id="luxury-amenities" class="py-28 bg-slate-950 text-stone-100 px-6 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <span class="text-emerald-700 font-bold tracking-widest uppercase text-sm mb-4 block" data-en="Signature Luxury" data-pt="Luxo de Assinatura">Signature Luxury</span>
+                <h2 class="text-3xl md:text-5xl font-serif font-bold text-amber-600 mb-6" data-en="Your Private Nocturnal Escape" data-pt="O Seu Refúgio Noturno Privado">Your Private Nocturnal Escape</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(4,120,87,0.15)] h-80 md:h-[450px] group">
+                    <img src="dfee384d-bbb2-4d68-87bb-8ee3ce8b9467.jpg" alt="Ambient Green Pool Illumination" class="w-full h-full object-cover gallery-img" data-index="6">
+                </div>
+                <div class="rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(8,145,178,0.15)] h-80 md:h-[450px] group md:mt-12">
+                    <img src="b65e94e7-fa8e-4055-87f7-a3a3d729bf30.jpg" alt="Submerged Entry Steps" class="w-full h-full object-cover gallery-img" data-index="7">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: Interactive FAQs Accordion -->
+    <section id="faq" class="py-24 bg-stone-100 px-6 border-t border-stone-200">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-emerald-700 font-bold tracking-widest uppercase text-xs mb-3 block" data-en="Essential Inquiries" data-pt="Informações Essenciais">Essential Inquiries</span>
+                <h2 class="text-3xl md:text-5xl font-serif font-bold text-slate-900" data-en="Frequently Asked Questions" data-pt="Perguntas Frequentes">Perguntas Frequentes</h2>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200/60 overflow-hidden">
+                    <button class="w-full px-8 py-5 text-left flex justify-between items-center focus:outline-none group" onclick="toggleFaq(this)">
+                        <span class="font-serif font-semibold text-slate-900 text-lg group-hover:text-emerald-700 transition-colors" data-en="What are the operational Check-in and Check-out frameworks?" data-pt="Quais são os horários operacionais de Check-in e Check-out?">What are the operational Check-in and Check-out frameworks?</span>
+                        <span class="text-xl font-light text-stone-400 transform transition-transform duration-200 group-hover:text-slate-900">+</span>
+                    </button>
+                    <div class="faq-content bg-stone-50/50">
+                        <p class="px-8 pb-5 text-slate-700 font-light leading-relaxed text-sm"
+                           data-en="To safeguard internal premium sanitization protocols, standard Check-in is allocated from 15:00 onwards, and Check-out must be executed prior to 11:00. Early entries or optimized departures can be negotiated directly with our management grid based on availability matrixes."
+                           data-pt="Para salvaguardar os protocolos premium de higienização, o Check-in padrão é realizado a partir das 15:00, e o Check-out deve ser executado antes das 11:00. Entradas antecipadas ou saídas tardias podem ser articuladas diretamente com a administração mediante disponibilidade.">
+                            To safeguard internal premium sanitization protocols, standard Check-in is allocated from 15:00 onwards, and Check-out must be executed prior to 11:00. Early entries or optimized departures can be negotiated directly with our management grid based on availability matrixes.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200/60 overflow-hidden">
+                    <button class="w-full px-8 py-5 text-left flex justify-between items-center focus:outline-none group" onclick="toggleFaq(this)">
+                        <span class="font-serif font-semibold text-slate-900 text-lg group-hover:text-emerald-700 transition-colors" data-en="What is the cancellations or matrix adjustment policy?" data-pt="Qual é a política de cancelamento ou ajuste de reserva?">What is the cancellations or matrix adjustment policy?</span>
+                        <span class="text-xl font-light text-stone-400 transform transition-transform duration-200 group-hover:text-slate-900">+</span>
+                    </button>
+                    <div class="faq-content bg-stone-50/50">
+                        <p class="px-8 pb-5 text-slate-700 font-light leading-relaxed text-sm"
+                           data-en="We provide absolute financial flexibility with zero penalty cancellations up to 14 days prior to your schedule dispatch date. Cancellations finalized within the 14-day window incur a 50% liquidation fee of the full booking valuation estimation."
+                           data-pt="Oferecemos flexibilidade financeira total com cancelamento gratuito até 14 dias antes da data programada. Cancelamentos efetuados dentro do período de 14 dias incorrem numa taxa de retenção de 50% do valor total estimado da reserva.">
+                            We provide absolute financial flexibility with zero penalty cancellations up to 14 days prior to your schedule dispatch date. Cancellations finalized within the 14-day window incur a 50% liquidation fee of the full booking valuation estimation.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200/60 overflow-hidden">
+                    <button class="w-full px-8 py-5 text-left flex justify-between items-center focus:outline-none group" onclick="toggleFaq(this)">
+                        <span class="font-serif font-semibold text-slate-900 text-lg group-hover:text-emerald-700 transition-colors" data-en="Are the private luxury suites pet-friendly?" data-pt="As vilas privadas de luxo aceitam animais de estimação (Pet-friendly)?">Are the private luxury suites pet-friendly?</span>
+                        <span class="text-xl font-light text-stone-400 transform transition-transform duration-200 group-hover:text-slate-900">+</span>
+                    </button>
+                    <div class="faq-content bg-stone-50/50">
+                        <p class="px-8 pb-5 text-slate-700 font-light leading-relaxed text-sm"
+                           data-en="Yes. We recognize pets as core elements of family structures. Well-behaved animal companions are accepted inside our luxury houses, provided they comply with spatial parameters. Please declare pet variables inside step 3 of your booking engine form."
+                           data-pt="Sim. Reconhecemos os animais de estimação como parte essencial da família. Companheiros bem comportados são aceites nas nossas vilas. Por favor, declare a intenção de trazer o seu animal no passo 3 do formulário de reserva.">
+                            Yes. We recognize pets as core elements of family structures. Well-behaved animal companions are accepted inside our luxury houses, provided they comply with spatial parameters. Please declare pet variables inside step 3 of your booking engine form.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200/60 overflow-hidden">
+                    <button class="w-full px-8 py-5 text-left flex justify-between items-center focus:outline-none group" onclick="toggleFaq(this)">
+                        <span class="font-serif font-semibold text-slate-900 text-lg group-hover:text-emerald-700 transition-colors" data-en="Is the Wi-Fi architecture optimized for digital nomads or remote workflows?" data-pt="A infraestrutura de Wi-Fi está otimizada para nómadas digitais ou trabalho remoto?">Is the Wi-Fi architecture optimized for digital nomads or remote workflows?</span>
+                        <span class="text-xl font-light text-stone-400 transform transition-transform duration-200 group-hover:text-slate-900">+</span>
+                    </button>
+                    <div class="faq-content bg-stone-50/50">
+                        <p class="px-8 pb-5 text-slate-700 font-light leading-relaxed text-sm"
+                           data-en="Absolutely. Each individual house is connected via private high-speed symmetrical fiber optic nodes (up to 1 Gbps download/upload limits), guaranteeing a bulletproof layout infrastructure for remote data pipelines, streaming, and multi-tenant video conferences."
+                           data-pt="Absolutamente. Cada vila está ligada através de nós privados de fibra ótica simétrica de alta velocidade (até 1 Gbps), garantindo uma infraestrutura estável para fluxos de dados exigentes, streaming e videoconferências em simultâneo.">
+                            Absolutely. Each individual house is connected via private high-speed symmetrical fiber optic nodes (up to 1 Gbps download/upload limits), guaranteeing a bulletproof layout infrastructure for remote data pipelines, streaming, and multi-tenant video conferences.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MULTI-STEP BOOKING ENGINE OVERLAY -->
+    <div id="booking-engine-overlay" class="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[60] hidden items-center justify-center p-4 md:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl border border-stone-200 flex flex-col relative text-slate-900">
+            
+            <div class="sticky top-0 bg-white border-b border-stone-200 px-6 py-4 flex justify-between items-center z-10">
+                <h3 class="text-lg font-serif font-bold text-slate-900 uppercase tracking-wide" data-en="Luxury Villa Reservation Planner" data-pt="Planeador de Reserva de Vilas de Luxo">Luxury Villa Reservation Planner</h3>
+                <button onclick="closeBookingEngine()" class="text-stone-400 hover:text-red-600 transition-colors focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" class="p-6 md:p-10 space-y-8 flex-1">
+                <input type="hidden" name="access_key" value="c814c68c-e334-408a-9d01-3245269c6ef3">
+                <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+                <!-- STEP 1: DATE CONFIGURATION -->
+                <div id="booking-step-1" class="space-y-6">
+                    <div class="border-b border-stone-100 pb-4">
+                        <span class="text-xs font-bold text-emerald-700 tracking-widest uppercase">Step 1 of 4</span>
+                        <h4 class="text-2xl font-serif font-bold text-slate-900 mt-1" data-en="When would you like to escape?" data-pt="Quando gostaria de viajar?">When would you like to escape?</h4>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700" data-en="Select Stay Date Range" data-pt="Selecionar Intervalo de Datas">Select Stay Date Range</label>
+                        <input type="text" id="engine-datepicker" required class="w-full bg-stone-50 border border-stone-300 rounded-xl p-4 text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-700 focus:bg-white cursor-pointer transition-all">
+                    </div>
+                    <div class="flex items-center gap-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500 bg-stone-50 p-3 rounded-lg border border-stone-200/60 w-max">
+                        <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-amber-200 border border-amber-400 rounded-sm"></span><span data-en="Almost Full" data-pt="Quase Cheio">Almost Full</span></div>
+                        <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-red-200 border border-red-400 rounded-sm"></span><span data-en="Fully Booked" data-pt="Esgotado">Fully Booked</span></div>
+                    </div>
+                    <div class="pt-4 flex justify-end">
+                        <button type="button" onclick="goToStep(2)" class="bg-slate-900 text-white px-8 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-slate-800 transition-colors" data-en="Next: Occupancy" data-pt="Próximo: Ocupação">Next: Occupancy</button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: OCCUPANCY -->
+                <div id="booking-step-2" class="hidden space-y-6">
+                    <div class="border-b border-stone-100 pb-4">
+                        <span class="text-xs font-bold text-emerald-700 tracking-widest uppercase">Step 2 of 4</span>
+                        <h4 class="text-2xl font-serif font-bold text-slate-900 mt-1" data-en="Configure Guest Parameters" data-pt="Configurar Parâmetros de Hóspedes">Configure Guest Parameters</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700" data-en="Total Accompanying Guests" data-pt="Total de Hóspedes Acompanhantes">Total Accompanying Guests</label>
+                            <select id="engine-guests" name="Total Guests Capacity" onchange="runEngineCalculations()" class="w-full bg-stone-50 border border-stone-300 rounded-xl p-4 text-sm focus:ring-2 focus:ring-emerald-700 focus:bg-white outline-none font-medium cursor-pointer transition-all">
+                                <option value="4">1 - 4 Guests</option>
+                                <option value="8">5 - 8 Guests</option>
+                                <option value="12">9 - 12 Guests</option>
+                                <option value="16">13 - 16 Guests</option>
+                                <option value="24">17+ Guests (Full Estate Portfolio Request)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700" data-en="Villas Desired (2 Bedrooms Each)" data-pt="Vilas Desejadas (2 Quartos Cada)">Villas Desired (2 Bedrooms Each)</label>
+                            <select id="engine-villas" name="Requested Villas Allocation" onchange="runEngineCalculations()" class="w-full bg-stone-50 border border-stone-300 rounded-xl p-4 text-sm focus:ring-2 focus:ring-emerald-700 focus:bg-white outline-none font-medium cursor-pointer transition-all">
+                                <option value="1">1 Private Luxury Villa (Max 4 people)</option>
+                                <option value="2">2 Private Luxury Villas (Max 8 people)</option>
+                                <option value="3">3 Private Luxury Villas (Max 12 people)</option>
+                                <option value="4">4 Private Luxury Villas (Max 16 people)</option>
+                                <option value="5">5 Private Luxury Villas (Max 20 people)</option>
+                                <option value="6">6 Private Luxury Villas (Full Estate Override)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="engine-smart-alert" class="p-4 bg-amber-50 border border-amber-200/80 rounded-xl text-xs text-amber-900 flex items-start gap-2.5 leading-relaxed font-medium">
+                        <span>💡</span>
+                        <p id="engine-alert-text"></p>
+                    </div>
+                    <div class="pt-4 flex justify-between">
+                        <button type="button" onclick="goToStep(1)" class="border border-stone-300 text-slate-700 px-6 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-stone-50 transition-colors" data-en="Back" data-pt="Voltar">Back</button>
+                        <button type="button" onclick="goToStep(3)" class="bg-slate-900 text-white px-8 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-slate-800 transition-colors" data-en="Next: Details" data-pt="Próximo: Detalhes">Next: Details</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: LEAD CONTACT DETAILS -->
+                <div id="booking-step-3" class="hidden space-y-6">
+                    <div class="border-b border-stone-100 pb-4">
+                        <span class="text-xs font-bold text-emerald-700 tracking-widest uppercase">Step 3 of 4</span>
+                        <h4 class="text-2xl font-serif font-bold text-slate-900 mt-1" data-en="Lead Contact Details" data-pt="Detalhes de Contacto Principal">Lead Contact Details</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                                <span data-en="Full Name" data-pt="Nome Completo">Full Name</span> <span class="text-red-500 font-bold">*</span>
+                            </label>
+                            <input type="text" name="Guest Name" id="input-name" class="w-full border border-stone-300 rounded-xl p-4 text-sm focus:ring-2 focus:ring-emerald-700 outline-none bg-stone-50 focus:bg-white transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                                <span data-en="Phone Number" data-pt="Número de Telefone">Phone Number</span> <span class="text-red-500 font-bold">*</span>
+                            </label>
+                            <div class="w-full">
+                                <input type="tel" id="input-phone" class="w-full border border-stone-300 rounded-xl p-4 text-sm focus:ring-2 focus:ring-emerald-700 outline-none bg-stone-50 focus:bg-white transition-all">
+                                <input type="hidden" name="Phone Number" id="hidden-phone-full">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                            <span data-en="Email Address" data-pt="Endereço de E-mail">Email Address</span> <span class="text-red-500 font-bold">*</span>
+                        </label>
+                        <input type="email" name="Email Address" id="input-email" class="w-full border border-stone-300 rounded-xl p-4 text-sm focus:ring-2 focus:ring-emerald-700 outline-none bg-stone-50 focus:bg-white transition-all">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700" data-en="Special Requests & Requirements" data-pt="Pedidos Especiais & Requisitos">Special Requests & Requirements</label>
+                        <textarea name="Special Requests Portfolio Text" id="input-requests" rows="3" placeholder="Tell us about any specific requirements..." data-en-placeholder="Tell us about any specific requirements..." data-pt-placeholder="Fale-nos sobre quaisquer requisitos específicos..." class="w-full border border-stone-300 rounded-xl p-4 text-sm focus:ring-2 focus:ring-emerald-700 outline-none bg-stone-50 focus:bg-white resize-none transition-all"></textarea>
+                    </div>
+                    <div class="pt-4 flex justify-between">
+                        <button type="button" onclick="goToStep(2)" class="border border-stone-300 text-slate-700 px-6 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-stone-50 transition-colors" data-en="Back" data-pt="Voltar">Back</button>
+                        <button type="button" onclick="goToStep(4)" class="bg-slate-900 text-white px-8 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-slate-800 transition-colors" data-en="Next: Review" data-pt="Próximo: Rever">Next: Review</button>
+                    </div>
+                </div>
+
+                <!-- STEP 4: AUDIT DISPATCH MATRIX -->
+                <div id="booking-step-4" class="hidden space-y-6">
+                    <div class="border-b border-stone-100 pb-4">
+                        <span class="text-xs font-bold text-emerald-700 tracking-widest uppercase">Step 4 of 4</span>
+                        <h4 class="text-2xl font-serif font-bold text-slate-900 mt-1" data-en="Verify Your Reservation Summary" data-pt="Verifique o Resumo da sua Reserva">Verify Your Reservation Summary</h4>
+                    </div>
+                    
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
+                        <div><p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1" data-en="Duration" data-pt="Duração">Duration</p><p id="summary-nights" class="font-semibold text-slate-900">—</p></div>
+                        <div><p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1" data-en="Total Occupants" data-pt="Total Ocupantes">Total Occupants</p><p id="summary-guests" class="font-semibold text-slate-900">—</p></div>
+                        <div><p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1" data-en="Allocated Villas" data-pt="Vilas Alocadas">Allocated Villas</p><p id="summary-villas" class="font-semibold text-slate-900">—</p></div>
+                        <div><p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1" data-en="Estimated Value" data-pt="Valor Estimado">Estimated Value</p><p id="summary-price" class="font-serif font-bold text-emerald-700 text-base">—</p></div>
+                    </div>
+
+                    <input type="hidden" name="Calculated Stay Duration Summary" id="hidden-nights">
+                    <input type="hidden" name="Calculated Financial Valuation Estimate" id="hidden-price">
+                    <input type="hidden" name="Exact Calendar Selected Range" id="hidden-dates">
+
+                    <!-- Custom Operational Timeline Notice Panel -->
+                    <div class="bg-amber-50/70 p-4 border border-amber-200/60 rounded-xl flex items-start text-xs text-amber-900 gap-3 leading-relaxed">
+                        <span class="text-sm mt-0.5">📋</span>
+                        <div>
+                            <p class="font-bold uppercase tracking-wide text-[10px] text-amber-800 mb-0.5" data-en="Operational Timeline Notice" data-pt="Aviso de Prazos Operacionais">Operational Timeline Notice</p>
+                            <p data-en="Please review your details carefully. Upon transmission, the absolute acceptance or denial of your reservation request will be audited and reviewed by our administration matrix as soon as possible." data-pt="Por favor, reveja os seus dados com atenção. Após a submissão, a aceitação ou rejeição definitiva do seu pedido de reserva será analisada e revista pela nossa administração o mais rapidamente possível.">Please review your details carefully. Upon transmission, the absolute acceptance or denial of your reservation request will be audited and reviewed by our administration matrix as soon as possible.</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-between">
+                        <button type="button" onclick="goToStep(3)" class="border border-stone-300 text-slate-700 px-6 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-stone-50 transition-colors" data-en="Back" data-pt="Voltar">Back</button>
+                        <button type="submit" class="bg-emerald-700 hover:bg-emerald-800 text-white px-10 py-4 rounded-lg text-sm font-bold uppercase tracking-widest shadow-md transition-colors" data-en="Submit Secure Booking Inquiry" data-pt="Enviar Pedido de Reserva Seguro">Submit Secure Booking Inquiry</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Success Outcome Target Layout -->
+            <div id="success-message" class="hidden flex flex-col items-center justify-center text-center space-y-6 py-20 px-8 opacity-0 transition-opacity duration-300">
+                <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-2 shadow-inner">
+                    <svg class="w-10 h-10 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h4 class="text-3xl font-serif font-bold text-slate-900" data-en="Thank you for choosing Ferraz da Silva & Marques, Lda." data-pt="Obrigado por escolher a Ferraz da Silva & Marques, Lda.">Thank you for choosing Ferraz da Silva & Marques, Lda.</h4>
+                <div class="text-slate-700 text-base font-light max-w-xl leading-relaxed space-y-3">
+                    <p data-en="Your premium reservation request portfolio has been safely dispatched over secure encryption pathways." data-pt="O seu portefólio de pedido de reserva premium foi despachado em segurança através de canais encriptados.">Your premium reservation request portfolio has been safely dispatched over secure encryption pathways.</p>
+                    <p class="font-medium text-emerald-800 bg-emerald-50 py-2.5 px-4 border border-emerald-100 rounded-xl text-sm" data-en="Our board will review availability constraints, and a formal notification of acceptance or denial will be sent directly to your email as soon as possible." data-pt="A nossa equipa analisará as disponibilidades e uma notificação formal de aceitação ou rejeição será enviada diretamente para o seu e-mail o mais rapidamente possível.">Our board will review availability constraints, and a formal notification of acceptance or denial will be sent directly to your email as soon as possible.</p>
+                </div>
+                <button onclick="closeBookingEngine()" class="border border-slate-900 hover:bg-slate-900 hover:text-white px-8 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all mt-4" data-en="Return to Site" data-pt="Voltar ao Site">Return to Site</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIGH-COMPLIANCE PRIVACY POLICY OVERLAY MODAL (GDPR / AL PORTUGAL) -->
+    <div id="privacy-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md z-[70] hidden items-center justify-center p-4">
+        <div class="bg-white w-full max-w-4xl h-[85vh] overflow-y-auto rounded-3xl shadow-2xl p-6 md:p-10 relative">
+            <button onclick="closeModal('privacy-modal')" class="absolute top-6 right-6 text-stone-400 hover:text-red-600 transition-colors z-10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="prose max-w-none text-slate-700 text-xs md:text-sm leading-relaxed space-y-6">
+                <h3 class="font-serif font-bold text-2xl text-slate-900 border-b pb-3 sticky top-0 bg-white" data-en="Privacy Policy" data-pt="Política de Privacidade">Privacy Policy</h3>
+                
+                <div class="space-y-4 font-light" id="privacy-text-container">
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200/60">
+                        <h4 class="font-serif font-bold text-slate-900 text-base mb-2" data-en="1. General Framework & Data Controller" data-pt="1. Enquadramento Geral e Responsável pelo Tratamento">1. General Framework & Data Controller</h4>
+                        <p data-en="This Privacy Policy gives users detailed information on how Ferraz da Silva & Marques, Lda (headquartered in Portugal, operating Registo AL: 123456/AL), acts as the Data Controller under the guidelines of the EU General Data Protection Regulation (GDPR). By navigating our site or initiating booking validation queries, you accept the treatment architectures detailed below."
+                           data-pt="A presente Política de Privacidade pretende dar aos Utilizadores a informação detalhada sobre como a Ferraz da Silva & Marques, Lda (com sede em Portugal, operando sob o Registo AL: 123456/AL), enquanto Responsável pelo Tratamento, procede ao tratamento de dados sob as diretrizes do Regulamento Geral de Proteção de Dados (RGPD). Ao navegar ou iniciar pedidos de reserva, aceita os termos descritos.">
+                            This Privacy Policy gives users detailed information on how Ferraz da Silva & Marques, Lda (headquartered in Portugal, operating Registo AL: 123456/AL), acts as the Data Controller under the guidelines of the EU General Data Protection Regulation (GDPR). By navigating our site or initiating booking validation queries, you accept the treatment architectures detailed below.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-serif font-bold text-slate-900 text-base mb-1" data-en="2. Data Collection Channels & Attributes" data-pt="2. Canais de Recolha e Dados do Utilizador">2. Data Collection Channels & Attributes</h4>
+                        <p data-en="Personal Data is explicitly requested via direct collection channels when the User interacts with our structural layout layers: completing our multi-step booking module or clicking our encrypted WhatsApp direct hyper-communication link. The parameters handled consist fundamentally of your Full Name, Email Address, and Phone Number. Other systemic usability factors like IP addresses and device browser fingerprints may be collected indirectly for layout optimizations."
+                           data-pt="Os Dados Pessoais são requisitados através de canais de recolha direta quando o Utilizador interage com o site: preenchendo o formulário de reserva multi-step ou clicando no botão de contacto direto via WhatsApp. Os dados recolhidos consistem essencialmente no Nome Completo, Endereço de E-mail e Número de Telefone. Outros fatores de usabilidade sistémica, como o endereço IP ou características do dispositivo/browser, podem ser recolhidos indiretamente para otimização da página.">
+                            Personal Data is explicitly requested via direct collection channels when the User interacts with our structural layout layers: completing our multi-step booking module or clicking our encrypted WhatsApp direct hyper-communication link. The parameters handled consist fundamentally of your Full Name, Email Address, and Phone Number. Other systemic usability factors like IP addresses and device browser fingerprints may be collected indirectly for layout optimizations.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-serif font-bold text-slate-900 text-base mb-1" data-en="3. Legal Grounds & Purposes of Processing" data-pt="3. Fundamentos de Licitude e Finalidades do Tratamento">3. Legal Grounds & Purposes of Processing</h4>
+                        <p data-en="The treatment of user metrics is executed under strict lawful bases: (A) Execution of a Contract or pre-contractual steps requested by the user to process villa availability and summary calculations; (B) Compliance with Legal Obligations under Portuguese fiscal frameworks for electronic invoicing; (C) Our Legitimate Interest to safeguard physical security and evaluate service satisfaction across the estate. We explicitly do not trade, sell, or monetize user data pipelines for unauthorized third-party commercial campaigns."
+                           data-pt="O tratamento de dados é executado sob fundamentos estritos de licitude: (A) Diligências pré-contratuais ou execução de um contrato a pedido do utilizador para processar disponibilidades e estimativas de valor; (B) Cumprimento de Obrigações Legais sob o enquadramento fiscal e administrativo português para faturação eletrónica; (C) Interesse Legítimo para salvaguardar a segurança de bens e analisar a satisfação do serviço nas nossas vilas. Não comercializamos ou partilhamos os seus dados para campanhas de marketing de terceiros.">
+                            The treatment of user metrics is executed under strict lawful bases: (A) Execution of a Contract or pre-contractual steps requested by the user to process villa availability and summary calculations; (B) Compliance with Legal Obligations under Portuguese fiscal frameworks for electronic invoicing; (C) Our Legitimate Interest to safeguard physical security and evaluate service satisfaction across the estate. We explicitly do not trade, sell, or monetize user data pipelines for unauthorized third-party commercial campaigns.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-serif font-bold text-slate-900 text-base mb-1" data-en="4. Authorized Subcontractors & Data Recipients" data-pt="4. Entidades Subcontratantes e Destinatários dos Dados">4. Authorized Subcontractors & Data Recipients</h4>
+                        <p data-en="To execute technical operations seamlessly, user attributes are securely dispatched across verified sub-processors bound by strict data processing agreements matching Article 28 of the GDPR. This includes Web3Forms (handling secure form transit layers directly to our email matrix) and WhatsApp / Meta (processing encrypted messaging when you launch our floating live help desk button). No cross-border transfers outside the European Economic Area are performed without equivalent legal safety shields."
+                           data-pt="Para executar as operações técnicas, os dados são despachados de forma segura através de subcontratantes vinculados por acordos escritos nos termos do artigo 28.º do RGPD. Isto inclui a Web3Forms (processando o envio seguro do formulário para o nosso e-mail) e o WhatsApp / Meta (processando mensagens encriptadas quando clica no botão flutuante de suporte). Não são realizadas transferências internacionais de dados para fora do Espaço Económico Europeu sem as devidas garantias legais de segurança.">
+                            To execute technical operations seamlessly, user attributes are securely dispatched across verified sub-processors bound by strict data processing agreements matching Article 28 of the GDPR. This includes Web3Forms (handling secure form transit layers directly to our email matrix) and WhatsApp / Meta (processing encrypted messaging when you launch our floating live help desk button). No cross-border transfers outside the European Economic Area are performed without equivalent legal safety shields.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-serif font-bold text-slate-900 text-base mb-1" data-en="5. Security Measures & Retention Horizons" data-pt="5. Medidas de Segurança e Prazos de Conservação">5. Security Measures & Retention Horizons</h4>
+                        <p data-en="All communication pathways established between your device node and our servers run strictly over secure encrypted connections utilizing the HTTPS protocol and SSL/TLS standards. Personal records are retained exclusively for the time window necessary to fulfill the specific destination targets (typically 6 months post-inquiry for booking records), after which they are thoroughly purged, except where extended by Portuguese statutory tax or financial record preservation mandates."
+                           data-pt="Todas as vias de comunicação estabelecidas entre o dispositivo do utilizador e o site correm obrigatoriamente através de canais seguros utilizando o protocolo HTTPS e padrões de segurança SSL/TLS. Os dados pessoais serão armazenados e conservados apenas pelo período mínimo necessário para as finalidades que motivaram a sua recolha (tipicamente 6 meses para registos de pedidos), sendo depois totalmente eliminados, exceto quando houver obrigação legal ou fiscal que exija a sua preservação estendida em Portugal.">
+                            All communication pathways established between your device node and our servers run strictly over secure encrypted connections utilizing the HTTPS protocol and SSL/TLS standards. Personal records are retained exclusively for the time window necessary to fulfill the specific destination targets (typically 6 months post-inquiry for booking records), after which they are thoroughly purged, except where extended by Portuguese statutory tax or financial record preservation mandates.
+                        </p>
+                    </div>
+
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200/60">
+                        <h4 class="font-serif font-bold text-slate-900 text-base mb-2" data-en="6. Exercise of Rights & Regulatory Recourse" data-pt="6. Exercício de Direitos e Autoridade de Controlo">6. Exercise of Rights & Regulatory Recourse</h4>
+                        <p data-en="Under international and European mandates, you maintain complete rights of access, rectification, processing limitation, data portability, and absolute elimination ('right to be forgotten') of your data assets. To launch an administrative right query, contact our administration board via our formal contact indicators. Furthermore, you hold the legal right to submit formal complaints to the competent national supervisory authority: National Data Protection Commission (CNPD - Portugal, Av. D. Carlos I, 134, Lisboa | geral@cnpd.pt)."
+                           data-pt="Sob o enquadramento europeu, assistem-lhe os direitos de acesso, retificação, limitação do tratamento, portabilidade dos dados e eliminação absoluta ('direito ao esquecimento') dos seus dados. Para exercer estes direitos, contacte diretamente a nossa administração. Adicionalmente, assiste-lhe o direito de apresentar reclamação junto da autoridade de controlo nacional competente: Comissão Nacional de Proteção de Dados (CNPD - Portugal, Av. D. Carlos I, 134, Lisboa | geral@cnpd.pt).">
+                            Under international and European mandates, you maintain complete rights of access, rectification, processing limitation, data portability, and absolute elimination ('right to be forgotten') of your data assets. To launch an administrative right query, contact our administration board via our formal contact indicators. Furthermore, you hold the legal right to submit formal complaints to the competent national supervisory authority: National Data Protection Commission (CNPD - Portugal, Av. D. Carlos I, 134, Lisboa | geral@cnpd.pt).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIGH-COMPLIANCE TERMS OF SERVICE OVERLAY MODAL -->
+    <div id="terms-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md z-[70] hidden items-center justify-center p-4">
+        <div class="bg-white w-full max-w-4xl h-[85vh] overflow-y-auto rounded-3xl shadow-2xl p-6 md:p-10 relative">
+            <button onclick="closeModal('terms-modal')" class="absolute top-6 right-6 text-stone-400 hover:text-red-600 transition-colors z-10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="prose max-w-none text-slate-700 text-xs md:text-sm leading-relaxed space-y-6">
+                <h3 class="font-serif font-bold text-2xl text-slate-900 border-b pb-3 sticky top-0 bg-white" data-en="Terms of Service" data-pt="Termos de Serviço">Terms of Service</h3>
+                
+                <div class="space-y-4 font-light" id="terms-text-container">
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200/60">
+                        <h4 class="font-serif font-bold text-slate-900 text-base mb-2" data-en="1. Core Scope of Accommodations & Asset Use" data-pt="1. Âmbito de Serviço e Utilização de Infraestruturas">1. Core Scope of Accommodations & Asset Use</h4>
+                        <p data-en="Ferraz da Silva & Marques, Lda offers temporary short-term luxury villa accommodation across an exclusive real estate portfolio consisting of 6 identical premium 2-bedroom houses. Our operational architecture includes a single central swimming pool shared universally among the 6 units, and one private traditional brick-built barbecue structure assigned to each individual house. We explicitly do not offer or provide culinary services, breakfasts, catering, spa, or massage programs."
+                           data-pt="A Ferraz da Silva & Marques, Lda disponibiliza serviços de alojamento temporário de luxo composto por 6 casas T2 premium idênticas. A nossa infraestrutura operacional inclui uma piscina central partilhada que serve coletivamente as 6 unidades e uma churrasqueira tradicional privada em tijolo alocada a cada casa individual. Não disponibilizamos ou fornecemos serviços de refeições, pequenos-almoços, catering, tratamentos de spa ou massagens.">
+                            Ferraz da Silva & Marques, Lda offers temporary short-term luxury villa accommodation across an exclusive real estate portfolio consisting of 6 identical premium 2-bedroom houses. Our infrastructure includes a single central swimming pool shared universally among the 6 units, and one private traditional brick-built barbecue structure assigned to each individual house. We explicitly do not offer or provide culinary services, breakfasts, catering, spa, or massage programs.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-serif font-bold text-slate-900 text-base mb-1" data-en="2. Booking Request & Validation Architecture" data-pt="2. Processo de Reserva e Vinculação Contratual">2. Booking Request & Validation Architecture</h4>
+                        <p data-en="Compiling and transmitting data entries via our online multi-step planning interface acts purely as a non-binding availability inquiry matrix. A reservation query is only legally verified and bound when our administration matrix performs a deliberate calendar audit, processes constraints, and issues a formal written notification of validation directly to your declared email address."
+                           data-pt="O preenchimento e submissão de dados através do nosso planeador multi-step constitui puramente um pedido de disponibilidade não vinculativo. Uma reserva só é considerada juridicamente válida e confirmada quando a nossa administração realiza uma auditoria de calendário, verifica as disponibilidades e emite uma notificação formal de aceitação enviada por escrito diretamente para o seu endereço de e-mail.">
+                            Compiling and transmitting data entries via our online multi-step planning interface acts purely as a non-binding availability inquiry matrix. A reservation query is only legally verified and bound when our administration matrix performs a deliberate calendar audit, processes constraints, and issues a formal written notification of validation directly to your declared email address.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-serif font-bold text-slate-900 text-base mb-1" data-en="3. Operational Timing Frameworks" data-pt="3. Horários e Regras de Check-in e Check-out">3. Operational Timing Frameworks</h4>
+                        <p data-en="To ensure our premium sanitization and maintenance guidelines are flawlessly executed across suites, standard Check-in entries are authorized from 15:00 onwards. Check-out workflows must be completely finalized prior to 11:00. Deviations or special timing adjustments must be requested explicitly via our contact frameworks and are subject to real-time administrative review and structural availability constraints."
+                           data-pt="Para garantir que as nossas diretrizes de higienização e manutenção são executadas sem falhas nas suites, a entrada (Check-in) padrão está autorizada a partir das 15:00. A saída (Check-out) deve ser totalmente concluída antes das 11:00. Qualquer alteração ou ajuste de horário deve ser expressamente solicitada à administração e está sujeita a confirmação prévia e disponibilidade operacional.">
+                            To ensure our premium sanitization and maintenance guidelines are flawlessly executed across suites, standard Check-in entries are authorized from 15:00 onwards. Check-out workflows must be completely finalized prior to 11:00. Deviations or special timing adjustments must be requested explicitly via our contact frameworks and are subject to real-time administrative review and structural availability constraints.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-serif font-bold text-slate-900 text-base mb-1" data-en="4. Cancellation, Penalties & Liquidation Matrix" data-pt="4. Política de Cancelamento e Liquidação Financeira">4. Cancellation, Penalties & Liquidation Matrix</h4>
+                        <p data-en="Our contractual cancellation policy provides full flexibility with zero financial penalties up to 14 days before your scheduled arrival date. Cancellations processed within the 14-day window preceding check-in will trigger a contract execution penalty fee equivalent to 50% of the entire estimated booking valuation, collected to compensate for inventory isolation costs."
+                           data-pt="A nossa política de cancelamento contratual oferece flexibilidade total, sem qualquer penalização financeira, até 14 dias antes da data de chegada programada. Cancelamentos comunicados dentro da janela de 14 dias que antecede o check-in ativarão uma penalização de execução contratual equivalente a 50% do valor total estimado da reserva, cobrada para compensar os custos de bloqueio de inventário.">
+                            Our contractual cancellation policy provides full flexibility with zero financial penalties up to 14 days before your scheduled arrival date. Cancellations processed within the 14-day window preceding check-in will trigger a contract execution penalty fee equivalent to 50% of the entire estimated booking valuation, collected to compensate for inventory isolation costs.
+                        </p>
+                    </div>
+
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200/60">
+                        <h4 class="font-serif font-bold text-slate-900 text-base mb-2" data-en="5. Rules of Conduct & Civil Liability Obligations" data-pt="5. Regras de Conduta e Responsabilidade Civil por Danos">5. Rules of Conduct & Civil Liability Obligations</h4>
+                        <p data-en="Occupants are legally required to maintain proper decorum, civil behavior, and respect the serene rural nature of the estate. Misuse of the shared central swimming pool area or individual brick barbecue units that results in architectural degradation, system damage, or physical property loss will automatically hold the lead guest contractually and civilly liable. Ferraz da Silva & Marques, Lda reserves the absolute right to terminate ongoing accommodation contracts immediately, without refund, if rules of conduct are severely breached."
+                           data-pt="Os hóspedes estão legalmente obrigados a manter o devido decoro, comportamento cívico e a respeitar a natureza pacífica e isolada da propriedade. O uso indevido da área da piscina central partilhada ou das churrasqueiras individuais que resulte em degradação arquitetónica, danos nos sistemas ou perda de propriedade física responsabilizará contratual e civilmente o hóspede titular. A Ferraz da Silva & Marques, Lda reserva-se o direito absoluto de rescindir imediatamente o contrato de alojamento em curso, sem direito a reembolso, em caso de violação severa das regras de conduta.">
+                            Occupants are legally required to maintain proper decorum, civil behavior, and respect the serene rural nature of the estate. Misuse of the shared central swimming pool area or individual brick barbecue units that results in architectural degradation, system damage, or physical property loss will automatically hold the lead guest contractually and civilly liable. Ferraz da Silva & Marques, Lda reserves the absolute right to terminate ongoing accommodation contracts immediately, without refund, if rules of conduct are severely breached.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Luxury Floating WhatsApp Button -->
+    <a href="https://wa.me/351912345678" target="_blank" rel="noopener noreferrer" 
+       class="fixed bottom-6 right-6 z-50 bg-emerald-700 hover:bg-emerald-800 text-white p-4 rounded-full shadow-2xl transition-all duration-300 btn-whatsapp-pulse flex items-center justify-center group border border-emerald-600/30"
+       aria-label="Contact WhatsApp">
+        <svg class="w-6 h-6 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 12.008 0c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 12.004-11.953 12.004-.001 0 0 0 0 0-2.005-.001-3.975-.51-5.728-1.479L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.966C16.528 1.975 14.067 1.953 12.01 1.953c-5.438 0-9.863 4.373-9.867 9.801-.001 1.73.473 3.42 1.372 4.904l-.451 1.648 1.693-.443zm12.304-6.843c-.302-.151-1.786-.882-2.052-.979-.266-.097-.461-.146-.655.146-.194.291-.746.97-.914 1.164-.168.194-.336.219-.638.069-.303-.151-1.276-.47-2.431-1.5-.899-.802-1.506-1.792-1.682-2.093-.177-.302-.019-.465.132-.614.136-.134.302-.351.453-.527.151-.176.201-.293.302-.489.101-.195.051-.366-.025-.517-.076-.151-.655-1.579-.897-2.162-.236-.569-.475-.492-.655-.501-.17-.008-.364-.01-.559-.01s-.511.073-.779.366c-.268.293-1.023 1.001-1.023 2.442 0 1.442 1.049 2.836 1.196 3.03.147.195 2.064 3.151 5.001 4.42.698.302 1.243.483 1.668.617.702.223 1.341.192 1.847.116.564-.085 1.786-.731 2.039-1.439.254-.707.254-1.316.178-1.44-.076-.124-.268-.196-.57-.346z"/>
+        </svg>
+    </a>
+
+    <!-- EXPANDED FOOTER -->
+    <footer class="bg-slate-950 text-stone-400 pt-16 pb-10 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <!-- Branding Column -->
+                <div class="space-y-4 md:col-span-2">
+                    <div class="text-xl md:text-2xl font-serif font-bold text-stone-200">
+                        Ferraz da Silva & Marques, Lda <span class="text-emerald-700">| Vilas</span>
+                    </div>
+                    <p class="text-xs font-light text-stone-500 max-w-sm leading-relaxed" 
+                       data-en="Providing benchmark architectural isolation, independent living setups, and contemporary luxury villa hospitality since 2026."
+                       data-pt="Proporcionando isolamento arquitetónico de referência, estruturas de habitação independentes e alojamento em vilas de luxo contemporâneas desde 2026.">
+                        Providing benchmark architectural isolation, independent living setups, and contemporary luxury villa hospitality since 2026.
+                    </p>
+                </div>
+
+                <!-- Navigation Links Column -->
+                <div>
+                    <h5 class="text-stone-200 text-xs font-bold uppercase tracking-widest mb-4" data-en="Navigation" data-pt="Navegação">Navigation</h5>
+                    <ul class="space-y-2 text-sm font-light">
+                        <li><a href="#the-villa" class="hover:text-emerald-700 transition-colors" data-en="The Property" data-pt="A Propriedade">The Property</a></li>
+                        <li><a href="#features" class="hover:text-emerald-700 transition-colors" data-en="Interiors" data-pt="Interiores">Interiores</a></li>
+                        <li><a href="#reviews" class="hover:text-emerald-700 transition-colors" data-en="Guest Reviews" data-pt="Avaliações">Guest Reviews</a></li>
+                        <li><a href="#faq" class="hover:text-emerald-700 transition-colors" data-en="Support / FAQs" data-pt="Suporte / FAQs">Support / FAQs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal Compliance & Safety Badges -->
+                <div class="space-y-5">
+                    <div>
+                        <h5 class="text-stone-200 text-xs font-bold uppercase tracking-widest mb-3" data-en="Legal Framework" data-pt="Enquadramento Legal">Legal Framework</h5>
+                        <p class="text-xs text-stone-500 font-medium bg-slate-900/60 border border-slate-800 px-3 py-1.5 rounded w-max">
+                            Registo AL: <span class="text-stone-300 font-mono font-bold">123456/AL</span>
+                        </p>
+                    </div>
+                    <div>
+                        <h5 class="text-stone-200 text-xs font-bold uppercase tracking-widest mb-2" data-en="Secure Payments" data-pt="Pagamentos Seguros">Secure Payments</h5>
+                        <div class="flex flex-wrap gap-2 text-[10px] font-mono font-bold tracking-wider text-stone-400">
+                            <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">VISA</span>
+                            <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">MASTERCARD</span>
+                            <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">MB WAY</span>
+                            <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">PAYPAL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Line -->
+            <div class="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center text-xs">
+                <p class="text-stone-500 font-light mb-4 md:mb-0" data-en="&copy; 2026 Ferraz da Silva & Marques, Lda Vilas. All rights reserved." data-pt="&copy; 2026 Ferraz da Silva & Marques, Lda Vilas. Todos os direitos reservados.">&copy; 2026 Ferraz da Silva & Marques, Lda Vilas. All rights reserved.</p>
+                <div class="flex space-x-6 text-stone-500 font-light">
+                    <button onclick="openModal('privacy-modal')" class="hover:text-emerald-700 transition-colors focus:outline-none" data-en="Privacy Policy" data-pt="Política de Privacidade">Privacy Policy</button>
+                    <button onclick="openModal('terms-modal')" class="hover:text-emerald-700 transition-colors focus:outline-none" data-en="Terms of Service" data-pt="Termos de Serviço">Terms of Service</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let bookedVillaInventory = {};
+        try {
+            bookedVillaInventory = JSON.parse(localStorage.getItem('bookedVillaInventory')) || {};
+        } catch(e) { console.log("Storage isolation tracking active."); }
+
+        let iti;
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                const phoneInputField = document.getElementById("input-phone");
+                if(phoneInputField) {
+                    iti = window.intlTelInput(phoneInputField, {
+                        initialCountry: "pt", 
+                        separateDialCode: true, 
+                        strictMode: true, 
+                        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js"
+                    });
+                }
+            } catch(err) { console.log("Flag library map compilation error."); }
+        });
+
+        let pickerInstance;
+        try {
+            pickerInstance = flatpickr("#engine-datepicker", {
+                mode: "range",
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                onDayCreate: function(dObj, dStr, fp, dayElem) {
+                    const localDate = new Date(dayElem.dateObj.getTime() - dayElem.dateObj.getTimezoneOffset() * 60000);
+                    const dateKey = localDate.toISOString().slice(0, 10);
+                    const villasOccupied = bookedVillaInventory[dateKey] || 0;
+                    if (villasOccupied >= 6) {
+                        dayElem.classList.add("calendar-fully-booked");
+                    } else if (villasOccupied >= 4) {
+                        dayElem.classList.add("calendar-almost-full");
+                    }
+                },
+                onChange: function() { runEngineCalculations(); }
+            });
+        } catch(err) { console.log("Calendar framework map sandbox catch."); }
+
+        const engineOverlay = document.getElementById('booking-engine-overlay');
+
+        function openBookingEngine() {
+            if(!engineOverlay) return;
+            engineOverlay.classList.remove('hidden');
+            engineOverlay.classList.add('flex'); 
+            setTimeout(() => { engineOverlay.classList.remove('opacity-0'); }, 10);
+            document.body.style.overflow = 'hidden';
+            runEngineCalculations();
+        }
+
+        function closeBookingEngine() {
+            if(!engineOverlay) return;
+            engineOverlay.classList.add('opacity-0');
+            setTimeout(() => { 
+                engineOverlay.classList.add('hidden'); 
+                engineOverlay.classList.remove('flex'); 
+                resetFormWizard();
+            }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        function goToStep(stepNum) {
+            if (stepNum === 2 && pickerInstance && pickerInstance.selectedDates.length < 2) {
+                alert(currentLang === 'en' ? "Please choose both check-in and check-out dates on the calendar first." : "Por favor, selecione as datas de check-in e check-out no calendário primeiro.");
+                return;
+            }
+
+            if (stepNum === 4) {
+                const nameVal = document.getElementById('input-name').value.trim();
+                const emailInput = document.getElementById('input-email');
+
+                if (!nameVal || !emailInput.value.trim() || !emailInput.checkValidity()) {
+                    alert(currentLang === 'en' ? "Please complete all mandatory contact indicators (*) correctly before proceeding." : "Por favor, preencha todos os campos de contacto obrigatórios (*) de forma correta antes de avançar.");
+                    return;
+                }
+
+                if(iti && !iti.isValidNumber()) {
+                    alert(currentLang === 'en' ? "The input phone number length or dialing schema is invalid for the selected country flag format." : "O número de telefone inserido está incompleto ou é inválido para o país selecionado.");
+                    return;
+                }
+                
+                if(iti) document.getElementById('hidden-phone-full').value = iti.getNumber();
+            }
+
+            for (let i = 1; i <= 4; i++) {
+                const step = document.getElementById(`booking-step-${i}`);
+                if(step) step.classList.add('hidden');
+            }
+            const targetStep = document.getElementById(`booking-step-${stepNum}`);
+            if(targetStep) targetStep.classList.remove('hidden');
+            runEngineCalculations();
+        }
+
+        function resetFormWizard() {
+            const formObj = document.getElementById('contact-form');
+            if(formObj) formObj.reset();
+            if(pickerInstance) pickerInstance.clear();
+            goToStep(1);
+        }
+
+        function runEngineCalculations() {
+            const guestCount = parseInt(document.getElementById('engine-guests').value) || 4;
+            const villaSelectEl = document.getElementById('engine-villas');
+            let villaCount = parseInt(villaSelectEl.value) || 1;
+            
+            const minRequiredVillas = Math.ceil(guestCount / 4);
+            if (villaCount < minRequiredVillas) {
+                villaSelectEl.value = minRequiredVillas;
+                villaCount = minRequiredVillas;
+            }
+
+            const alertTextEl = document.getElementById('engine-alert-text');
+            if(alertTextEl) {
+                if (currentLang === 'en') {
+                    alertTextEl.innerHTML = `Our estate has 6 premium 2-bedroom villas. Based on your group size of <strong>${guestCount} people</strong>, we have automatically allocated <strong>${villaCount} private villa(s)</strong> (€200/night per villa) to guarantee luxury spatial comfort.`;
+                } else {
+                    alertTextEl.innerHTML = `A nossa propriedade dispõe de 6 vilas T2 premium. Para o seu grupo de <strong>${guestCount} pessoas</strong>, alocámos automaticamente <strong>${villaCount} vila(s) privada(s)</strong> (200€/noite por vila) para garantir o máximo conforto.`;
+                }
+            }
+
+            let nightsCount = 0;
+            if (pickerInstance && pickerInstance.selectedDates.length === 2) {
+                const diffTime = Math.abs(pickerInstance.selectedDates[1] - pickerInstance.selectedDates[0]);
+                nightsCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            }
+
+            const estimatedTotalPrice = nightsCount * villaCount * 200;
+
+            document.getElementById('summary-nights').textContent = nightsCount > 0 ? `${nightsCount} ${currentLang === 'en' ? 'Nights' : 'Noites'}` : '—';
+            document.getElementById('summary-guests').textContent = `${guestCount} ${currentLang === 'en' ? 'Guests' : 'Hóspedes'}`;
+            document.getElementById('summary-villas').textContent = `${villaCount} ${currentLang === 'en' ? 'Villas' : 'Vilas'}`;
+            document.getElementById('summary-price').textContent = estimatedTotalPrice > 0 ? `${estimatedTotalPrice}€` : '—';
+
+            document.getElementById('hidden-nights').value = `${nightsCount} Nights`;
+            document.getElementById('hidden-price').value = `${estimatedTotalPrice} EUR Estimated`;
+            document.getElementById('hidden-dates').value = document.getElementById('engine-datepicker').value;
+        }
+
+        let currentLang = 'en';
+        const langToggleBtn = document.getElementById('lang-switcher');
+        const langToggleMobileBtn = document.getElementById('lang-switcher-mobile');
+
+        function switchLanguage() {
+            currentLang = (currentLang === 'en') ? 'pt' : 'en';
+            langToggleBtn.textContent = currentLang.toUpperCase();
+            if(langToggleMobileBtn) langToggleMobileBtn.textContent = currentLang.toUpperCase();
+
+            document.querySelectorAll('[data-en]').forEach(element => {
+                const targetText = element.getAttribute(`data-${currentLang}`);
+                if (targetText) element.innerHTML = targetText;
+            });
+            runEngineCalculations();
+        }
+
+        if(langToggleBtn) langToggleBtn.addEventListener('click', switchLanguage);
+
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if(mobileMenuBtn) mobileMenuBtn.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+
+        const form = document.getElementById('contact-form');
+        const successMsg = document.getElementById('success-message');
+
+        if(form) {
+            form.addEventListener('submit', function(e) {
+                if(form.querySelector('[name="access_key"]').value === "YOUR_ACCESS_KEY_HERE") {
+                    e.preventDefault();
+                    alert("Setup Alert: Please make sure your copied access key token is placed into line 125 of your index.html file code!");
+                    return;
+                }
+
+                e.preventDefault();
+
+                let localReservations = [];
+                try {
+                    localReservations = JSON.parse(localStorage.getItem('localReservations')) || [];
+                } catch(err) { console.log("Cache reading error sandbox matrix."); }
+
+                const guestSelectionCount = document.getElementById('engine-guests').value;
+                const villaSelectionCount = document.getElementById('engine-villas').value;
+                const phoneOutputValue = document.getElementById('hidden-phone-full').value || document.getElementById('input-phone').value;
+                
+                const newReservationRecord = {
+                    id: Date.now(),
+                    name: document.getElementById('input-name').value,
+                    phone: phoneOutputValue, 
+                    email: document.getElementById('input-email').value,
+                    dates: document.getElementById('engine-datepicker').value,
+                    guests: guestSelectionCount,
+                    villas: villaSelectionCount,
+                    requests: document.getElementById('input-requests').value,
+                    status: 'pending'
+                };
+                
+                localReservations.push(newReservationRecord);
+                try {
+                    localStorage.setItem('localReservations', JSON.stringify(localReservations));
+                } catch(err) { console.log("Sandbox write protection caught."); }
+
+                form.style.opacity = '0';
+
+                fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(Object.fromEntries(new FormData(form)))
+                })
+                .then(async (response) => {
+                    if (response.status == 200) {
+                        form.classList.add('hidden');
+                        if(successMsg) {
+                            successMsg.classList.remove('hidden');
+                            void successMsg.offsetWidth;
+                            successMsg.style.opacity = '1';
+                        }
+                    } else {
+                        alert("Submission error. Please check configurations.");
+                        form.style.opacity = '1';
+                    }
+                })
+                .catch(error => {
+                    form.classList.add('hidden');
+                    if(successMsg) {
+                        successMsg.classList.remove('hidden');
+                        successMsg.style.opacity = '1';
+                    }
+                });
+            });
+        }
+
+        // Accordion Core Engine
+        function toggleFaq(button) {
+            const content = button.nextElementSibling;
+            const statusIndicator = button.querySelector('span:last-child');
+            
+            document.querySelectorAll('.faq-content').forEach(item => {
+                if (item !== content) {
+                    item.style.maxHeight = null;
+                    item.previousElementSibling.querySelector('span:last-child').textContent = '+';
+                }
+            });
+
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+                statusIndicator.textContent = '+';
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+                statusIndicator.textContent = '−';
+            }
+        }
+
+        // Dynamic Modal Handlers for Privacy & Terms
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if(!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if(!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            if(document.getElementById('booking-engine-overlay').classList.contains('hidden')) {
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
+</body>
+</html>

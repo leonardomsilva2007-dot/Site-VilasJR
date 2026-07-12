@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Internal Control Panel (Cloud Sincronizado)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @media print {
+            body { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; }
+            .max-w-7xl, #villa-select-modal, #inventory-setup-modal, .fixed, nav, button { display: none !important; }
+            #inventory-view-modal { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; height: auto !important; display: block !important; background: white !important; color: black !important; z-index: 9999 !important; padding: 20px !important; }
+            #inventory-view-modal .bg-slate-900 { background: white !important; border: none !important; box-shadow: none !important; width: 100% !important; max-width: 100% !important; }
+            #inventory-view-modal button, #inventory-view-modal .border-b button { display: none !important; }
+            .print-text-black { color: black !important; }
+            .print-border-black { border-color: #000000 !important; }
+            .print-table-row { background: transparent !important; border-bottom: 1px solid #000000 !important; }
+            .print-checkbox { display: block !important; width: 16px; height: 16px; border: 1px solid black; border-radius: 3px; margin-right: 10px; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white font-sans antialiased min-h-screen p-6 md:p-12">
+
+    <div class="max-w-7xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+        
+        <div class="p-8 border-b border-slate-800 bg-slate-900/50 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">⚙️</span>
+                <div>
+                    <h3 class="text-xl font-bold tracking-wide">Ferraz da Silva & Marques | Cloud Management</h3>
+                    <p class="text-xs text-slate-400 font-light uppercase tracking-wider mt-0.5">Sincronização em Tempo Real (PC / Tablet / Telemóvel)</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="fetchReservationsFromCloud()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs px-3 py-2 rounded-lg text-amber-400 font-medium">🔄 Sincronizar Agora</button>
+                <a href="index.html" class="text-xs text-slate-400 hover:text-white bg-slate-950 border border-slate-800 px-4 py-2 rounded-lg">← Ver Website</a>
+            </div>
+        </div>
+
+        <div class="bg-slate-950 border-b border-slate-800 flex flex-wrap text-sm font-medium">
+            <button onclick="switchTab('calendar-tab')" id="btn-calendar-tab" class="tab-btn px-6 py-4 border-b-2 border-amber-600 text-amber-600 focus:outline-none transition-all">Controlo de Disponibilidade</button>
+            <button onclick="switchTab('allocation-tab')" id="btn-allocation-tab" class="tab-btn px-6 py-4 border-b-2 border-transparent text-slate-400 hover:text-white focus:outline-none transition-all">Visual Allocation Map</button>
+            <button onclick="switchTab('pending-tab')" id="btn-pending-tab" class="tab-btn px-6 py-4 border-b-2 border-transparent text-slate-400 hover:text-white focus:outline-none transition-all flex items-center gap-2">
+                Pending Requests <span id="badge-pending" class="bg-amber-600 text-slate-950 text-[11px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+            </button>
+            <button onclick="switchTab('accepted-tab')" id="btn-accepted-tab" class="tab-btn px-6 py-4 border-b-2 border-transparent text-slate-400 hover:text-white focus:outline-none transition-all">Accepted Reservations</button>
+            <button onclick="switchTab('disabled-tab')" id="btn-disabled-tab" class="tab-btn px-6 py-4 border-b-2 border-transparent text-slate-400 hover:text-white focus:outline-none transition-all">Denied Requests</button>
+            <button onclick="switchTab('trash-tab')" id="btn-trash-tab" class="tab-btn px-6 py-4 border-b-2 border-transparent text-slate-400 hover:text-white focus:outline-none transition-all flex items-center gap-2">
+                Trash / Histórico <span id="badge-trash" class="bg-red-900 text-white text-[11px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+            </button>
+        </div>
+
+        <div class="p-8">
+            <div id="calendar-tab" class="tab-content space-y-8">
+                <div class="space-y-4">
+                    <h4 class="text-base font-semibold text-stone-200 uppercase tracking-wider">Manual Block/Override Matrix</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end bg-slate-950 p-6 border border-slate-800 rounded-xl">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Select Target Dates</label>
+                            <input type="text" id="admin-datepicker" placeholder="Choose date range..." class="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 text-sm text-white focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Villas Booked (Out of 6)</label>
+                            <select id="admin-villa-count" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 text-sm text-white focus:outline-none">
+                                <option value="0">0 Villas Booked (Mark Available)</option>
+                                <option value="4">4 Villas Booked (Mark Almost Full)</option>
+                                <option value="5">5 Villas Booked (Mark Almost Full)</option>
+                                <option value="6">6 Villas Booked (Mark Fully Booked)</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="updateInventoryMatrix()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-lg text-sm uppercase transition-colors">Apply Status</button>
+                            <button onclick="clearFullInventory()" class="bg-slate-900 border border-red-900/40 text-red-400 hover:bg-red-900/20 py-3 px-4 rounded-lg text-sm uppercase transition-colors">Reset Grid</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h4 class="text-base font-semibold text-stone-200 uppercase tracking-wider">Global House Stock Template</h4>
+                        <p class="text-xs text-slate-400">Padrão carregado ao aceitar novas marcações.</p>
+                    </div>
+                    <div class="bg-slate-950 p-6 border border-slate-800 rounded-xl space-y-4">
+                        <div class="flex gap-3">
+                            <input type="text" id="new-item-name" placeholder="Ex: Toalhas de Banho..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg p-3 text-sm text-white focus:outline-none">
+                            <input type="number" id="new-item-qty" placeholder="Qtd" class="w-20 bg-slate-900 border border-slate-800 rounded-lg p-3 text-sm text-white text-center focus:outline-none">
+                            <button onclick="addGlobalTemplateItem()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-6 rounded-lg text-sm font-semibold transition-colors">+ Add</button>
+                        </div>
+                        <div id="global-template-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="allocation-tab" class="tab-content hidden space-y-6">
+                <div class="bg-slate-950 p-6 border border-slate-800 rounded-xl space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-4">
+                        <div>
+                            <h4 class="text-base font-semibold text-stone-200 uppercase tracking-wider">Continuous Villa Timeline Tracker</h4>
+                            <p class="text-xs text-slate-400 mt-0.5">Clique num bloco colorido para ver e imprimir o inventário da casa.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="navigateTimelineView(-30)" class="bg-slate-900 border border-slate-800 text-xs px-4 py-2 rounded-lg">← Previous 30 Days</button>
+                            <button onclick="navigateTimelineView(30)" class="bg-slate-900 border border-slate-800 text-xs px-4 py-2 rounded-lg">Next 30 Days →</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto w-full border border-slate-800 rounded-xl bg-slate-900/40">
+                        <table class="w-full min-w-[900px] border-collapse table-fixed">
+                            <thead><tr id="timeline-header-row" class="bg-slate-950 border-b border-slate-800 text-[11px] font-mono text-slate-400"></tr></thead>
+                            <tbody id="timeline-body-matrix" class="divide-y divide-slate-800/60 text-xs"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pending-tab" class="tab-content hidden space-y-4"><div id="list-pending" class="grid grid-cols-1 gap-4"></div></div>
+            <div id="accepted-tab" class="tab-content hidden space-y-4"><div id="list-accepted" class="grid grid-cols-1 gap-4"></div></div>
+            <div id="disabled-tab" class="tab-content hidden space-y-4"><div id="list-denied" class="grid grid-cols-1 gap-4"></div></div>
+            <div id="trash-tab" class="tab-content hidden space-y-4"><div id="list-trash" class="grid grid-cols-1 gap-4"></div></div>
+        </div>
+    </div>
+
+    <div id="villa-select-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md p-6 rounded-2xl shadow-2xl space-y-6">
+            <div><h4 class="text-lg font-bold text-stone-100">Allocate Villa Units (Step 1/2)</h4></div>
+            <div id="modal-villas-container" class="grid grid-cols-2 gap-3"></div>
+            <div class="flex justify-end gap-3"><button onclick="closeVillaModal()" class="bg-slate-950 border border-slate-800 px-4 py-2 rounded-lg text-xs font-semibold">Cancel</button><button id="modal-next-step-btn" class="bg-emerald-700 text-white px-5 py-2 rounded-lg text-xs font-bold">Next</button></div>
+        </div>
+    </div>
+
+    <div id="inventory-setup-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-xl p-6 rounded-2xl shadow-2xl space-y-6 flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-start">
+                <h4 class="text-lg font-bold text-stone-100">Customize Booking Allocation Stock (Step 2/2)</h4>
+                <span id="modal-guest-count-badge" class="bg-slate-800 text-xs text-amber-500 border border-slate-700 px-2.5 py-1 rounded-full font-bold"></span>
+            </div>
+            <div class="flex gap-2">
+                <input type="text" id="modal-add-item-name" placeholder="Add custom item..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white">
+                <input type="number" id="modal-add-item-qty" value="1" class="w-16 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white text-center">
+                <button onclick="addCustomItemToActiveApprovalList()" class="bg-slate-800 border border-slate-700 px-4 rounded-lg text-xs font-semibold">+</button>
+            </div>
+            <div id="modal-inventory-items-list" class="flex-1 overflow-y-auto space-y-2 border-t border-b border-slate-800 py-3 min-h-[150px]"></div>
+            <div class="flex justify-between items-center"><button onclick="backToVillaModalStep()" class="text-xs text-slate-400 underline">← Back</button><button id="modal-finalize-booking-btn" class="bg-emerald-700 text-white px-6 py-2.5 rounded-lg text-xs font-bold uppercase shadow-lg">Finalize & Approve</button></div>
+        </div>
+    </div>
+
+    <div id="inventory-view-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-xl p-6 rounded-2xl shadow-2xl space-y-4">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-start print-border-black">
+                <div><h4 id="view-pack-title" class="text-base font-bold text-stone-100 print-text-black font-serif">House Inventory Checklist</h4><p id="view-pack-subtitle" class="text-xs text-slate-400 font-light mt-0.5 print-text-black"></p></div>
+                <button onclick="closeModal('inventory-view-modal')" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+            </div>
+            <div id="view-pack-items-container" class="space-y-2 max-h-[50vh] overflow-y-auto"></div>
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="window.print()" class="bg-amber-600 hover:bg-amber-700 text-slate-950 px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors flex items-center gap-1.5 shadow-md">🖨️ Export & Print PDF</button>
+                <button onclick="closeModal('inventory-view-modal')" class="bg-slate-950 border border-slate-800 px-5 py-2 rounded-lg text-xs font-semibold">Close View</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CENTRAL CLOUD CONNECTION CREDENTIALS ---
+        const SUPABASE_URL = "https://waemewnmvzrsxaedygus.supabase.co/rest/v1/"; 
+        const SUPABASE_KEY = "sb_publishable_2MIqzJ-N5DOdh4z0eOYNcA_O-9nkMex";
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let bookedVillaInventory = JSON.parse(localStorage.getItem('bookedVillaInventory')) || {};
+        let localReservations = []; // Loaded from cloud storage live
+        
+        let globalStockTemplate = JSON.parse(localStorage.getItem('globalStockTemplate')) || [
+            { name: "Toalhas de Banho", qty: 4 },
+            { name: "Lençóis de Cama", qty: 2 },
+            { name: "Sacos de Carvão", qty: 1 },
+            { name: "Papel Higiénico (Rolos)", qty: 4 },
+            { name: "Cápsulas de Café", qty: 10 }
+        ];
+
+        let currentlyProcessingResId = null;
+        let temporaryApprovalVillas = [];
+        let temporaryApprovalInventory = [];
+        let timelineStartOffsetDays = 0;
+
+        const villaColorClasses = {
+            1: { bg: 'bg-emerald-700/80 border-emerald-600', text: 'text-emerald-100', badge: 'bg-emerald-600 text-slate-950' },
+            2: { bg: 'bg-amber-600/80 border-amber-500', text: 'text-amber-100', badge: 'bg-amber-500 text-slate-950' },
+            3: { bg: 'bg-blue-700/80 border-blue-600', text: 'text-blue-100', badge: 'bg-blue-600 text-white' },
+            4: { bg: 'bg-purple-700/80 border-purple-600', text: 'text-purple-100', badge: 'bg-purple-600 text-white' },
+            5: { bg: 'bg-pink-700/80 border-pink-600', text: 'text-pink-100', badge: 'bg-pink-600 text-white' },
+            6: { bg: 'bg-cyan-700/80 border-cyan-600', text: 'text-cyan-100', badge: 'bg-cyan-600 text-slate-950' }
+        };
+
+        let adminDatePicker = flatpickr("#admin-datepicker", { mode: "range", minDate: "today", dateFormat: "Y-m-d" });
+
+        // Fetch dataset records from Cloud Ledger Engine
+        async function fetchReservationsFromCloud() {
+            try {
+                const { data, error } = await _supabase.from('reservations').select('*');
+                if (error) throw error;
+                localReservations = data || [];
+                rebuildCalendarAvailabilityFromScratch();
+                renderReservationsLists();
+                if(document.getElementById('allocation-tab').classList.contains('hidden') === false) {
+                    renderContinuousGanttTimeline();
+                }
+            } catch (err) {
+                console.error("Cloud synchronizer ledger link error:", err);
+            }
+        }
+
+        async function updateCloudStatus(id, updateFields) {
+            try {
+                const { error } = await _supabase.from('reservations').update(updateFields).eq('id', id);
+                if (error) throw error;
+                await fetchReservationsFromCloud();
+            } catch (err) {
+                alert("Error writing entry data updates back to cloud matrix repository.");
+            }
+        }
+
+        async function permanentlyDeleteReservation(id) {
+            if(confirm("Warning: Purge this record permanently from Cloud infrastructure?")) {
+                try {
+                    const { error } = await _supabase.from('reservations').delete().eq('id', id);
+                    if (error) throw error;
+                    await fetchReservationsFromCloud();
+                } catch (err) {
+                    alert("Failed to drop database node.");
+                }
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-amber-600', 'text-amber-600');
+                btn.classList.add('border-transparent', 'text-slate-400');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.remove('border-transparent', 'text-slate-400');
+            activeBtn.classList.add('border-amber-600', 'text-amber-600');
+            
+            if(tabId === 'allocation-tab') renderContinuousGanttTimeline();
+            else if (tabId === 'calendar-tab') renderGlobalTemplateList();
+            renderReservationsLists();
+        }
+
+        function renderGlobalTemplateList() {
+            const container = document.getElementById('global-template-list');
+            container.innerHTML = '';
+            globalStockTemplate.forEach((item, index) => {
+                const node = document.createElement('div');
+                node.className = "bg-slate-900 border border-slate-800 p-3 rounded-lg flex items-center justify-between text-xs";
+                node.innerHTML = `<div class="truncate"><span class="text-slate-500 font-mono font-bold">#${index+1}</span> <span class="text-stone-200 font-medium">${item.name}</span></div><div class="flex items-center space-x-3"><span class="bg-amber-600/10 text-amber-500 px-2 py-0.5 font-bold rounded">Qtd: ${item.qty}</span><button onclick="removeGlobalTemplateItem(${index})" class="text-red-400 text-sm font-bold">✕</button></div>`;
+                container.appendChild(node);
+            });
+            localStorage.setItem('globalStockTemplate', JSON.stringify(globalStockTemplate));
+        }
+
+        function addGlobalTemplateItem() {
+            const name = document.getElementById('new-item-name').value.trim();
+            const qty = parseInt(document.getElementById('new-item-qty').value) || 0;
+            if(!name) return;
+            globalStockTemplate.push({ name, qty });
+            document.getElementById('new-item-name').value = '';
+            document.getElementById('new-item-qty').value = '';
+            renderGlobalTemplateList();
+        }
+
+        function removeGlobalTemplateItem(index) {
+            globalStockTemplate.splice(index, 1);
+            renderGlobalTemplateList();
+        }
+
+        function rebuildCalendarAvailabilityFromScratch() {
+            bookedVillaInventory = {};
+            localReservations.forEach(res => {
+                if (res.status === 'accepted' && res.dates && res.dates.includes(' to ')) {
+                    const rangeParts = res.dates.split(' to ');
+                    let start = new Date(rangeParts[0]);
+                    let end = new Date(rangeParts[1]);
+                    let requestedVillasCount = (res.assignedVillas && res.assignedVillas.length > 0) ? res.assignedVillas.length : (parseInt(res.villas) || 1);
+                    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                        const dayStringKey = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+                        let currentLevel = bookedVillaInventory[dayStringKey] || 0;
+                        bookedVillaInventory[dayStringKey] = Math.min(6, currentLevel + requestedVillasCount);
+                    }
+                }
+            });
+            localStorage.setItem('bookedVillaInventory', JSON.stringify(bookedVillaInventory));
+        }
+
+        function getOccupiedVillasForRange(startDateStr, endDateStr, ignoreResId = null) {
+            let start = new Date(startDateStr); let end = new Date(endDateStr);
+            let occupied = new Set();
+            localReservations.forEach(res => {
+                if(res.status === 'accepted' && res.id !== ignoreResId && res.assignedVillas && res.dates.includes(' to ')) {
+                    const parts = res.dates.split(' to ');
+                    if(start <= new Date(parts[1]) && end >= new Date(parts[0])) {
+                        res.assignedVillas.forEach(vNum => occupied.add(parseInt(vNum)));
+                    }
+                }
+            });
+            return occupied;
+        }
+
+        function openVillaModal(resId) {
+            currentlyProcessingResId = resId;
+            const res = localReservations.find(item => item.id === resId);
+            if(!res) return;
+            const neededCount = parseInt(res.villas) || 1;
+            const parts = res.dates.split(' to ');
+            const occupiedVillas = getOccupiedVillasForRange(parts[0], parts[1]);
+            const container = document.getElementById('modal-villas-container');
+            container.innerHTML = '';
+            for(let i = 1; i <= 6; i++) {
+                const isOccupied = occupiedVillas.has(i);
+                const item = document.createElement('label');
+                item.className = `flex items-center justify-between p-3 border rounded-xl cursor-pointer ${isOccupied ? 'bg-red-950/20 border-red-900/40 opacity-50' : 'bg-slate-950 border-slate-800'}`;
+                item.innerHTML = `<div class="flex flex-col"><span class="text-sm font-bold">Villa ${i}</span><span class="text-[10px] ${isOccupied ? 'text-red-400' : 'text-emerald-500'} font-medium">${isOccupied ? 'Occupied' : 'Available'}</span></div><input type="checkbox" name="allocated-villa-checkbox" value="${i}" ${isOccupied ? 'disabled' : ''} class="w-4 h-4 rounded text-amber-600 accent-amber-600">`;
+                container.appendChild(item);
+            }
+            document.getElementById('modal-next-step-btn').onclick = function() {
+                const selectedCheckboxes = document.querySelectorAll('input[name="allocated-villa-checkbox"]:checked');
+                if(selectedCheckboxes.length !== neededCount) { alert(`Choose exactly ${neededCount} villa units.`); return; }
+                temporaryApprovalVillas = Array.from(selectedCheckboxes).map(cb => parseInt(cb.value));
+                document.getElementById('villa-select-modal').classList.add('hidden');
+                openInventorySetupModal(res);
+            };
+            document.getElementById('villa-select-modal').className = document.getElementById('villa-select-modal').className.replace('hidden', 'flex');
+        }
+
+        function closeVillaModal() { document.getElementById('villa-select-modal').classList.replace('flex', 'hidden'); currentlyProcessingResId = null; }
+
+        function openInventorySetupModal(bookingRecord) {
+            document.getElementById('modal-guest-count-badge').innerHTML = `👥 Hóspedes: ${bookingRecord.guests}`;
+            temporaryApprovalInventory = JSON.parse(JSON.stringify(globalStockTemplate));
+            renderApprovalInventoryList();
+            document.getElementById('modal-finalize-booking-btn').onclick = async function() {
+                await updateCloudStatus(currentlyProcessingResId, {
+                    status: 'accepted',
+                    assignedVillas: temporaryApprovalVillas,
+                    allocatedInventoryPack: temporaryApprovalInventory
+                });
+                document.getElementById('inventory-setup-modal').classList.replace('flex', 'hidden');
+                currentlyProcessingResId = null;
+                alert("Aprovado com sucesso e sincronizado na Nuvem!");
+            };
+            document.getElementById('inventory-setup-modal').classList.replace('hidden', 'flex');
+        }
+
+        function renderApprovalInventoryList() {
+            const container = document.getElementById('modal-inventory-items-list'); container.innerHTML = '';
+            temporaryApprovalInventory.forEach((item, index) => {
+                const block = document.createElement('div');
+                block.className = "flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 gap-4 text-xs";
+                block.innerHTML = `<span class="font-medium text-stone-300 truncate">${item.name}</span><div class="flex items-center space-x-2"><input type="number" value="${item.qty}" onchange="temporaryApprovalInventory[${index}].qty=parseInt(this.value)||0" class="w-16 bg-slate-900 text-center rounded p-1 font-bold text-amber-500"> <button onclick="temporaryApprovalInventory.splice(${index},1);renderApprovalInventoryList();" class="text-red-400 font-bold px-2">✕</button></div>`;
+                container.appendChild(block);
+            });
+        }
+
+        function addCustomItemToActiveApprovalList() {
+            const name = document.getElementById('modal-add-item-name').value.trim();
+            const qty = parseInt(document.getElementById('modal-add-item-qty').value) || 0;
+            if(!name) return;
+            temporaryApprovalInventory.push({ name, qty });
+            document.getElementById('modal-add-item-name').value = '';
+            renderApprovalInventoryList();
+        }
+
+        function backToVillaModalStep() { document.getElementById('inventory-setup-modal').classList.replace('flex', 'hidden'); openVillaModal(currentlyProcessingResId); }
+
+        function viewPackedStockRecords(resId) {
+            const res = localReservations.find(item => item.id === resId);
+            if(!res) return;
+            let unitsString = res.assignedVillas ? res.assignedVillas.map(n => `Vila 0${n}`).join(', ') : 'Padrão';
+            document.getElementById('view-pack-subtitle').innerHTML = `
+                <div class="mt-2 space-y-1 print-text-black text-xs md:text-sm">
+                    <p><strong class="font-semibold text-slate-400 print-text-black">Titular / Guest:</strong> ${res.name}</p>
+                    <p><strong class="font-semibold text-slate-400 print-text-black">Datas / Dates:</strong> ${res.dates}</p>
+                    <p><strong class="font-semibold text-slate-400 print-text-black">Total Hóspedes:</strong> ${res.guests} Pax</p>
+                    <p class="text-amber-500 font-bold print-text-black"><strong class="font-semibold text-slate-400 print-text-black">Unidades:</strong> ${unitsString}</p>
+                </div>`;
+            const container = document.getElementById('view-pack-items-container'); container.innerHTML = '';
+            let pack = res.allocatedInventoryPack || JSON.parse(JSON.stringify(globalStockTemplate));
+            pack.forEach(item => {
+                const row = document.createElement('div');
+                row.className = "flex items-center justify-between bg-slate-950 px-4 py-3 rounded-lg border border-slate-800 text-xs print-table-row";
+                row.innerHTML = `<div class="flex items-center"><span class="print-checkbox hidden"></span><span class="text-stone-300 font-medium print-text-black text-sm">${item.name}</span></div><span class="bg-amber-600/10 text-amber-500 px-3 py-1 rounded font-mono font-bold text-sm print-text-black">Qtd: ${item.qty}</span>`;
+                container.appendChild(row);
+            });
+            document.getElementById('inventory-view-modal').classList.replace('hidden', 'flex');
+        }
+
+        function closeModal(modalId) { document.getElementById(modalId).classList.replace('flex', 'hidden'); }
+        function navigateTimelineView(daysOffset) { timelineStartOffsetDays += daysOffset; renderContinuousGanttTimeline(); }
+
+        function renderContinuousGanttTimeline() {
+            const headerRow = document.getElementById('timeline-header-row');
+            const bodyMatrix = document.getElementById('timeline-body-matrix');
+            headerRow.innerHTML = '<th class="p-4 bg-slate-950 sticky left-0 z-10 w-[120px] border-r border-slate-800 font-bold text-slate-200">Unidades</th>';
+            bodyMatrix.innerHTML = '';
+            let dayStringsArray = []; let currentBaseDate = new Date(); currentBaseDate.setDate(currentBaseDate.getDate() + timelineStartOffsetDays);
+            for (let i = 0; i < 30; i++) {
+                let itDate = new Date(currentBaseDate); itDate.setDate(itDate.getDate() + i);
+                const stringKey = new Date(itDate.getTime() - itDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+                dayStringsArray.push({ key: stringKey });
+                const cell = document.createElement('th'); cell.className = "p-2 text-center border-r border-slate-800/80 font-mono w-[55px] min-w-[55px]";
+                cell.innerHTML = `<div>${itDate.getDate()}/${itDate.getMonth()+1}</div>`; headerRow.appendChild(cell);
+            }
+            for (let vNum = 1; vNum <= 6; vNum++) {
+                const tr = document.createElement('tr');
+                let th = document.createElement('td'); th.className = "p-4 bg-slate-900 border-r border-slate-800 font-bold sticky left-0 z-10 font-mono text-[11px] flex justify-between items-center";
+                th.innerHTML = `<span>VILA 0${vNum}</span> <span class="w-2.5 h-3 rounded-sm ${villaColorClasses[vNum].bg.split(' ')[0]} border"></span>`; tr.appendChild(th);
+                dayStringsArray.forEach(dayObj => {
+                    const td = document.createElement('td'); td.className = "p-1 border-r border-slate-800/40 h-12 text-center bg-slate-900/10";
+                    let match = localReservations.find(r => r.status === 'accepted' && r.assignedVillas && r.assignedVillas.includes(vNum) && dayObj.key >= r.dates.split(' to ')[0] && dayObj.key <= r.dates.split(' to ')[1]);
+                    if (match) {
+                        const style = villaColorClasses[vNum]; td.className += ` ${style.bg} border-t border-b cursor-pointer`;
+                        td.onclick = () => viewPackedStockRecords(match.id);
+                        td.innerHTML = `<div class="text-[9px] font-bold ${style.text} truncate max-w-[50px] mx-auto">${match.name.split(' ')[0]}</div>`;
+                    }
+                    tr.appendChild(td);
+                });
+                bodyMatrix.appendChild(tr);
+            }
+        }
+
+        function renderReservationsLists() {
+            const pendingC = document.getElementById('list-pending'); const acceptedC = document.getElementById('list-accepted');
+            const deniedC = document.getElementById('list-denied'); const trashC = document.getElementById('list-trash');
+            pendingC.innerHTML = ''; acceptedC.innerHTML = ''; deniedC.innerHTML = ''; trashC.innerHTML = '';
+            let pCount = 0; let tCount = 0;
+
+            localReservations.forEach(res => {
+                const card = document.createElement('div'); card.className = "bg-slate-950 border border-slate-800 p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-6";
+                let vBadges = ''; if(res.status === 'accepted' && res.assignedVillas) { res.assignedVillas.forEach(n => { vBadges += `<span class="${villaColorClasses[n].badge} text-[10px] font-bold px-2 py-0.5 rounded font-mono">VILA 0${n}</span> `; }); }
+                let info = `<div class="space-y-2 flex-1"><div class="flex flex-wrap items-center gap-2"><span class="text-base font-bold text-stone-100 uppercase">${res.name}</span><div class="flex gap-1 ml-1">${vBadges}</div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-1 text-xs text-slate-300"><p><strong>Dates:</strong> ${res.dates}</p><p><strong>Guests:</strong> ${res.guests}</p><p><strong>Villas:</strong> ${res.villas}</p><p><strong>Phone:</strong> ${res.phone}</p></div></div>`;
+                
+                if (res.status === 'pending') {
+                    pCount++; card.innerHTML = info + `<div class="flex flex-row md:flex-col gap-2 min-w-[140px]"><button onclick="openVillaModal(${res.id})" class="bg-emerald-700 text-white font-bold text-xs py-2 px-4 rounded-lg">Approve</button><button onclick="updateCloudStatus(${res.id}, {status:'denied'})" class="text-red-400 text-xs py-2 px-4 border border-slate-800 rounded-lg">Decline</button></div>`; pendingC.appendChild(card);
+                } else if (res.status === 'accepted') {
+                    card.innerHTML = info + `<div class="flex flex-row md:flex-col gap-2 min-w-[140px]"><button onclick="viewPackedStockRecords(${res.id})" class="bg-slate-900 border border-slate-800 text-amber-500 text-xs py-2 px-3 rounded-lg font-semibold">📋 View Pack</button><span class="text-center bg-emerald-950 text-emerald-400 text-xs font-bold border border-emerald-800 px-3 py-1.5 rounded-lg">APPROVED ✅</span><button onclick="updateCloudStatus(${res.id}, {status:'pending'})" class="text-slate-500 text-[11px] underline">Revert</button></div>`; acceptedC.appendChild(card);
+                } else if (res.status === 'denied') {
+                    card.innerHTML = info + `<div class="flex flex-row md:flex-col gap-2 min-w-[140px]"><span class="text-center bg-red-950 text-red-400 text-xs font-bold border border-red-900 px-3 py-1.5 rounded-lg">DECLINED ❌</span><button onclick="updateCloudStatus(${res.id}, {status:'pending'})" class="text-slate-500 text-[11px] underline">Revert</button></div>`; deniedC.appendChild(card);
+                }
+            });
+
+            document.getElementById('badge-pending').textContent = pCount; document.getElementById('badge-pending').classList.toggle('hidden', pCount===0);
+            if (!pendingC.innerHTML) pendingC.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No pending requests.</p>';
+            if (!acceptedC.innerHTML) acceptedC.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No accepted entries.</p>';
+        }
+
+        // Initialize Core Component Execution Setup
+        fetchReservationsFromCloud();
+    </script>
+</body>
+</html>
