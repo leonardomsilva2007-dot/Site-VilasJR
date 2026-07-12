@@ -177,22 +177,22 @@
 
     <script>
         // --- SECURE CRYPTOGRAPHIC AUTHENTICATION ENGINE ---
-        // Irreversible SHA-256 fingerprint representation matrix matching '10895525Çmx'
+        // Normalização UTF-8 direta para aceitar perfeitamente o carácter especial 'Ç'
         const TARGET_PASS_HASH = "b4c2b921ea022de61fe04f81016fe2c2bcbe0e2e50ad5c0c9d72a74c77176d65";
 
         async function validateAdminGateCredentials() {
             const inputField = document.getElementById('auth-gate-pin-input');
             const errorMsg = document.getElementById('auth-gate-error-msg');
-            const passwordAttempt = inputField.value;
+            
+            // Força a normalização do texto inserido para bater exatamente com a assinatura
+            const passwordAttempt = inputField.value.normalize("NFC");
 
-            // Generate SHA-256 hash array using native hardware-accelerated web crypto API modules
             const msgBuffer = new TextEncoder().encode(passwordAttempt);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const computedHashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
             if (computedHashHex === TARGET_PASS_HASH) {
-                // Instantly wipe password data from screen elements, dismantle layout gate and launch sync pipeline
                 document.getElementById('auth-gate-screen').classList.add('hidden');
                 document.getElementById('main-admin-app-content').classList.remove('hidden');
                 fetchReservationsFromCloud();
@@ -208,9 +208,8 @@
         });
 
         // --- CENTRAL CLOUD CONNECTION CREDENTIALS ---
-        // Lembre-se de colar aqui novamente o seu URL e Chave caso volte a limpar o ficheiro
-        const SUPABASE_URL = "ADICIONE_AQUI_O_SEU_URL"; 
-        const SUPABASE_KEY = "ADICIONE_AQUI_A_SUA_CHAVE_API_PUBLISHABLE";
+        const SUPABASE_URL = "https://waemewnmvzrsxaedygus.supabase.co"; 
+        const SUPABASE_KEY = "sb_publishable_2MIqzJ-N5DOdh4z0eOYNcA_O-9nkMex";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let bookedVillaInventory = JSON.parse(localStorage.getItem('bookedVillaInventory')) || {};
