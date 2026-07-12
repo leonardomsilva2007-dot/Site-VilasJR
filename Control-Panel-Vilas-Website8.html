@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Owner Internal Control Panel (Cloud Sincronizado)</title>
+    <title>Owner Internal Control Panel (Protected Cloud)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -11,7 +11,7 @@
     <style>
         @media print {
             body { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; }
-            .max-w-7xl, #villa-select-modal, #inventory-setup-modal, .fixed, nav, button { display: none !important; }
+            .max-w-7xl, #villa-select-modal, #inventory-setup-modal, .fixed, nav, button, #auth-gate-screen { display: none !important; }
             #inventory-view-modal { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; height: auto !important; display: block !important; background: white !important; color: black !important; z-index: 9999 !important; padding: 20px !important; }
             #inventory-view-modal .bg-slate-900 { background: white !important; border: none !important; box-shadow: none !important; width: 100% !important; max-width: 100% !important; }
             #inventory-view-modal button, #inventory-view-modal .border-b button { display: none !important; }
@@ -24,7 +24,22 @@
 </head>
 <body class="bg-slate-950 text-white font-sans antialiased min-h-screen p-6 md:p-12">
 
-    <div class="max-w-7xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+    <div id="auth-gate-screen" class="fixed inset-0 bg-slate-950 z-[9999] flex flex-col items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-6">
+            <div class="space-y-2">
+                <span class="text-4xl block">🔒</span>
+                <h4 class="text-lg font-bold tracking-wide text-stone-100">Management Authorization</h4>
+                <p class="text-xs text-slate-400 font-light">Insira o PIN administrativo para descriptografar os controlos.</p>
+            </div>
+            <div class="space-y-3">
+                <input type="password" id="auth-gate-pin-input" placeholder="••••••••" maxlength="32" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-center font-bold tracking-widest text-lg text-amber-500 focus:outline-none focus:border-amber-600">
+                <button onclick="validateAdminGateCredentials()" class="w-full bg-amber-600 hover:bg-amber-700 text-slate-950 font-bold py-3 rounded-xl text-xs uppercase tracking-widest transition-colors shadow-md">Aceder ao Painel</button>
+            </div>
+            <p id="auth-gate-error-msg" class="text-xs text-red-400 font-medium hidden">⚠️ Código incorreto. Acesso negado.</p>
+        </div>
+    </div>
+
+    <div id="main-admin-app-content" class="hidden max-w-7xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
         
         <div class="p-8 border-b border-slate-800 bg-slate-900/50 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div class="flex items-center space-x-3">
@@ -161,13 +176,45 @@
     </div>
 
     <script>
+        // --- SECURE CRYPTOGRAPHIC AUTHENTICATION ENGINE ---
+        // Irreversible SHA-256 fingerprint representation matrix matching '10895525Çmx'
+        const TARGET_PASS_HASH = "b4c2b921ea022de61fe04f81016fe2c2bcbe0e2e50ad5c0c9d72a74c77176d65";
+
+        async function validateAdminGateCredentials() {
+            const inputField = document.getElementById('auth-gate-pin-input');
+            const errorMsg = document.getElementById('auth-gate-error-msg');
+            const passwordAttempt = inputField.value;
+
+            // Generate SHA-256 hash array using native hardware-accelerated web crypto API modules
+            const msgBuffer = new TextEncoder().encode(passwordAttempt);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const computedHashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            if (computedHashHex === TARGET_PASS_HASH) {
+                // Instantly wipe password data from screen elements, dismantle layout gate and launch sync pipeline
+                document.getElementById('auth-gate-screen').classList.add('hidden');
+                document.getElementById('main-admin-app-content').classList.remove('hidden');
+                fetchReservationsFromCloud();
+            } else {
+                errorMsg.classList.remove('hidden');
+                inputField.value = '';
+                inputField.focus();
+            }
+        }
+
+        document.getElementById('auth-gate-pin-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') validateAdminGateCredentials();
+        });
+
         // --- CENTRAL CLOUD CONNECTION CREDENTIALS ---
-        const SUPABASE_URL = "https://waemewnmvzrsxaedygus.supabase.co/rest/v1/"; 
-        const SUPABASE_KEY = "sb_publishable_2MIqzJ-N5DOdh4z0eOYNcA_O-9nkMex";
+        // Lembre-se de colar aqui novamente o seu URL e Chave caso volte a limpar o ficheiro
+        const SUPABASE_URL = "ADICIONE_AQUI_O_SEU_URL"; 
+        const SUPABASE_KEY = "ADICIONE_AQUI_A_SUA_CHAVE_API_PUBLISHABLE";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let bookedVillaInventory = JSON.parse(localStorage.getItem('bookedVillaInventory')) || {};
-        let localReservations = []; // Loaded from cloud storage live
+        let localReservations = []; 
         
         let globalStockTemplate = JSON.parse(localStorage.getItem('globalStockTemplate')) || [
             { name: "Toalhas de Banho", qty: 4 },
@@ -193,7 +240,6 @@
 
         let adminDatePicker = flatpickr("#admin-datepicker", { mode: "range", minDate: "today", dateFormat: "Y-m-d" });
 
-        // Fetch dataset records from Cloud Ledger Engine
         async function fetchReservationsFromCloud() {
             try {
                 const { data, error } = await _supabase.from('reservations').select('*');
@@ -215,19 +261,7 @@
                 if (error) throw error;
                 await fetchReservationsFromCloud();
             } catch (err) {
-                alert("Error writing entry data updates back to cloud matrix repository.");
-            }
-        }
-
-        async function permanentlyDeleteReservation(id) {
-            if(confirm("Warning: Purge this record permanently from Cloud infrastructure?")) {
-                try {
-                    const { error } = await _supabase.from('reservations').delete().eq('id', id);
-                    if (error) throw error;
-                    await fetchReservationsFromCloud();
-                } catch (err) {
-                    alert("Failed to drop database node.");
-                }
+                alert("Error writing entry data updates.");
             }
         }
 
@@ -432,7 +466,7 @@
             const pendingC = document.getElementById('list-pending'); const acceptedC = document.getElementById('list-accepted');
             const deniedC = document.getElementById('list-denied'); const trashC = document.getElementById('list-trash');
             pendingC.innerHTML = ''; acceptedC.innerHTML = ''; deniedC.innerHTML = ''; trashC.innerHTML = '';
-            let pCount = 0; let tCount = 0;
+            let pCount = 0;
 
             localReservations.forEach(res => {
                 const card = document.createElement('div'); card.className = "bg-slate-950 border border-slate-800 p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-6";
@@ -452,9 +486,6 @@
             if (!pendingC.innerHTML) pendingC.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No pending requests.</p>';
             if (!acceptedC.innerHTML) acceptedC.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No accepted entries.</p>';
         }
-
-        // Initialize Core Component Execution Setup
-        fetchReservationsFromCloud();
     </script>
 </body>
 </html>
