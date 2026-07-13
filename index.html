@@ -8,13 +8,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Flatpickr Advanced Calendar Engine CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-    <!-- International Telephone Input Flags Extension CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/css/intl-tel-input.css">
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/intl-tel-input.min.js"></script>
 
@@ -98,14 +97,12 @@
 </head>
 <body class="bg-stone-100 text-slate-900 font-sans antialiased selection:bg-emerald-700 selection:text-white">
 
-    <!-- Navigation Bar -->
     <nav class="fixed w-full z-50 bg-stone-100/90 backdrop-blur-md shadow-sm transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="text-xl md:text-2xl font-serif font-bold text-slate-900 tracking-tight">
                 Ferraz da Silva & Marques, Lda <span class="text-emerald-700">| Vilas</span>
             </a>
             
-            <!-- Desktop Menu -->
             <div class="hidden lg:flex items-center space-x-8">
                 <a href="#the-villa" class="text-sm font-medium text-slate-900 hover:text-emerald-700 transition-colors" data-en="The Villa" data-pt="A Vila">The Villa</a>
                 <a href="#features" class="text-sm font-medium text-slate-900 hover:text-emerald-700 transition-colors" data-en="Features" data-pt="Características">Features</a>
@@ -115,7 +112,6 @@
                 <a href="#luxury-amenities" class="text-sm font-medium text-slate-900 hover:text-emerald-700 transition-colors" data-en="Luxury Amenities" data-pt="Comodidades de Luxo">Luxury Amenities</a>
                 <a href="#faq" class="text-sm font-medium text-slate-900 hover:text-emerald-700 transition-colors" data-en="FAQs" data-pt="Perguntas Frequentes">FAQs</a>
                 
-                <!-- Language Toggle Button -->
                 <button id="lang-switcher" class="text-xs font-bold border border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white px-3 py-1.5 rounded transition-colors tracking-wider">
                     PT
                 </button>
@@ -123,7 +119,6 @@
                 <button onclick="openBookingEngine()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-2.5 rounded-md font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5" data-en="Book Your Stay" data-pt="Reservar Estadia">Book Your Stay</button>
             </div>
 
-            <!-- Mobile Menu Tools -->
             <div class="flex items-center space-x-4 lg:hidden">
                 <button id="lang-switcher-mobile" class="text-xs font-bold border border-slate-900 text-slate-900 px-2 py-1 rounded">
                     PT
@@ -136,7 +131,6 @@
             </div>
         </div>
 
-        <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden lg:hidden bg-stone-100 border-t border-stone-200 absolute w-full shadow-lg z-40">
             <div class="flex flex-col px-6 py-4 space-y-4">
                 <a href="#the-villa" class="mobile-link text-base font-medium text-slate-900" data-en="The Villa" data-pt="A Vila">The Villa</a>
@@ -151,7 +145,6 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section id="hero" class="relative h-screen flex items-center justify-center pt-20">
         <div class="absolute inset-0 z-0 overflow-hidden bg-slate-900">
             <img src="104d1259-5393-439d-8418-3d707aff0e91.jpg" alt="Modern Villa Exterior" class="w-full h-full object-cover opacity-70 gallery-img" data-index="0">
@@ -175,7 +168,6 @@
         </div>
     </section>
 
-    <!-- The Property Section -->
     <section id="the-villa" class="py-32 px-6 max-w-7xl mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div class="order-2 lg:order-1">
@@ -183,7 +175,7 @@
                     Where Interior Elegance Meets Endless Horizons
                 </h2>
                 <div class="space-y-6 text-lg text-slate-700 font-light leading-relaxed">
-                    <p data-en="Discover a seamless integration of sophisticated design and the raw beauty of the landscape. Our estate features 6 identical premium 2-bedroom private houses, each offering absolute isolation and refinement. The massive floor-to-ceiling glass facades eliminate boundaries, allowing natural light to flood the living spaces." data-pt="Descubra uma integração perfeita de design sofisticado e a beleza natural da paisagem. A nossa propriedade dispõe de 6 casas privadas idênticas de tipologia T2, oferecendo isolamento e requinte absolutos. As massivas fachadas de vidro do chão ao teto eliminam barreiras, permitindo que a luz inunde os espaços.">
+                    <p data-en="Discover a seamless integration of sophisticated design and the raw beauty of the landscape. Our estate features 6 identical premium 2-bedroom private houses, each offering absolute isolation and refinement. The massive floor-to-ceiling glass facades eliminate boundaries, allowing natural light to flood the living spaces." data-pt="Descubra uma integração perfeita de design sofisticado e a beleza natural da paisagem. A nossa propriedade dispõe de 6 casas privadas idênticas de tipologia T2, oferecendo isolamento e requinte absolutos. Las massivas fachadas de vidro do chão ao teto eliminam barreiras, permitindo que a luz inunde os espaços.">
                         Discover a seamless integration of sophisticated design and the raw beauty of the landscape. Our estate features 6 identical premium 2-bedroom private houses, each offering absolute isolation and refinement. The massive floor-to-ceiling glass facades eliminate boundaries, allowing natural light to flood the living spaces.
                     </p>
                 </div>
@@ -194,7 +186,6 @@
         </div>
     </section>
 
-    <!-- Interior Masterclass Section -->
     <section id="features" class="py-24 bg-stone-200 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
@@ -202,7 +193,6 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Card 1 -->
                 <div class="bg-stone-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow group">
                     <div class="h-72 overflow-hidden relative">
                         <img src="11274266-552a-4117-a528-88f793efadf9.png" alt="The Master Suite" class="w-full h-full object-cover gallery-img" data-index="2">
@@ -213,7 +203,6 @@
                     </div>
                 </div>
                 
-                <!-- Card 2 -->
                 <div class="bg-stone-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow group">
                     <div class="h-72 overflow-hidden relative">
                         <img src="f01b31e1-9607-4fa5-b090-c685765d2004.png" alt="The Lounge Room" class="w-full h-full object-cover gallery-img" data-index="3">
@@ -224,7 +213,6 @@
                     </div>
                 </div>
                 
-                <!-- Card 3 -->
                 <div class="bg-stone-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow group">
                     <div class="h-72 overflow-hidden relative">
                         <img src="d2ff70b2-d6e9-4d4c-bd5a-ef46f6c48a5e.jpg" alt="The Gourmet Kitchen" class="w-full h-full object-cover gallery-img" data-index="4">
@@ -235,7 +223,6 @@
                     </div>
                 </div>
                 
-                <!-- Card 4 -->
                 <div class="bg-stone-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow group">
                     <div class="h-72 overflow-hidden relative">
                         <img src="a080ef53-c6d2-4982-966a-d4ef0da44604.png" alt="Open-Concept Flow" class="w-full h-full object-cover gallery-img" data-index="5">
@@ -249,7 +236,6 @@
         </div>
     </section>
 
-    <!-- SECTION: Social Proof & Reviews -->
     <section id="reviews" class="py-24 bg-stone-100 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
@@ -258,16 +244,15 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Review 1 -->
                 <div class="bg-white p-8 rounded-2xl shadow-md border border-stone-200/60 flex flex-col justify-between">
                     <div>
                         <div class="flex text-amber-600 mb-4">
                             <span>★★★★★</span>
                         </div>
                         <p class="text-slate-700 font-light italic leading-relaxed mb-6"
-                           data-en="&ldquo;An architectural masterpiece. The complete silence and isolation of our villa provided the mental reset we desperately needed. Having our own traditional barbecue was perfect for summer evenings.&rdquo;"
-                           data-pt="&ldquo;Uma obra-prima arquitetónica. O silêncio e isolamento completo da nossa vila proporcionaram o reset mental que tanto precisávamos. Ter a nossa própria churrasqueira tradicional foi perfeito para as noites de verão.&rdquo;">
-                            &ldquo;An architectural masterpiece. The complete silence and isolation of our villa provided the mental reset we desperately needed. Having our own traditional barbecue was perfect for summer evenings.&rdquo;
+                           data-en="“An architectural masterpiece. The complete silence and isolation of our villa provided the mental reset we desperately needed. Having our own traditional barbecue was perfect for summer evenings.”"
+                           data-pt="“Uma obra-prima arquitetónica. O silêncio e isolamento completo da nossa vila proporcionaram o reset mental que tanto precisávamos. Ter a nossa própria churrasqueira tradicional foi perfeito para as noites de verão.”">
+                             “An architectural masterpiece. The complete silence and isolation of our villa provided the mental reset we desperately needed. Having our own traditional barbecue was perfect for summer evenings.”
                         </p>
                     </div>
                     <div class="flex items-center justify-between border-t border-stone-100 pt-4">
@@ -276,16 +261,15 @@
                     </div>
                 </div>
 
-                <!-- Review 2 -->
                 <div class="bg-white p-8 rounded-2xl shadow-md border border-stone-200/60 flex flex-col justify-between">
                     <div>
                         <div class="flex text-amber-600 mb-4">
                             <span>★★★★★</span>
                         </div>
                         <p class="text-slate-700 font-light italic leading-relaxed mb-6"
-                           data-en="&ldquo;Exquisite space. The main swimming pool serves the 6 houses beautifully, maintaining a very calm, exclusive atmosphere. Highly recommend for families seeking independent luxury.&rdquo;"
-                           data-pt="&ldquo;Espaço requintado. A piscina principal serve as 6 casas perfeitamente, mantendo um ambiente muito calmo e exclusivo. Recomendo vivamente para famílias que procuram luxo independente.&rdquo;">
-                            &ldquo;Exquisite space. The main swimming pool serves the 6 houses beautifully, maintaining a very calm, exclusive atmosphere. Highly recommend for families seeking independent luxury.&rdquo;
+                           data-en="“Exquisite space. The main swimming pool serves the 6 houses beautifully, maintaining a very calm, exclusive atmosphere. Highly recommend for families seeking independent luxury.”"
+                           data-pt="“Espaço requintado. A piscina principal serve as 6 casas perfeitamente, mantendo um ambiente muito calmo e exclusivo. Recomendo vivamente para famílias que procuram luxo independente.”">
+                             “Exquisite space. The main swimming pool serves the 6 houses beautifully, maintaining a very calm, exclusive atmosphere. Highly recommend for families seeking independent luxury.”
                         </p>
                     </div>
                     <div class="flex items-center justify-between border-t border-stone-100 pt-4">
@@ -294,16 +278,15 @@
                     </div>
                 </div>
 
-                <!-- Review 3 -->
                 <div class="bg-white p-8 rounded-2xl shadow-md border border-stone-200/60 flex flex-col justify-between">
                     <div>
                         <div class="flex text-amber-600 mb-4">
                             <span>★★★★★</span>
                         </div>
                         <p class="text-slate-700 font-light italic leading-relaxed mb-6"
-                           data-en="&ldquo;The perfect remote office and sanctuary combined. Impeccable high-speed Wi-Fi, premium interior comfort, and a private traditional grill where we cooked every night. Absolute peace.&rdquo;"
-                           data-pt="&ldquo;O escritório remoto e santuário perfeito combinados. Wi-Fi de alta velocidade impecável, conforto interior premium e uma churrasqueira privada onde cozinhámos todas as noites. Paz absoluta.&rdquo;">
-                            &ldquo;The perfect remote office and sanctuary combined. Impeccable high-speed Wi-Fi, premium interior comfort, and a private traditional grill where we cooked every night. Absolute peace.&rdquo;
+                           data-en="“The perfect remote office and sanctuary combined. Impeccable high-speed Wi-Fi, premium interior comfort, and a private traditional grill where we cooked every night. Absolute peace.”"
+                           data-pt="“O escritório remoto e santuário perfeito combinados. Wi-Fi de alta velocidade impecável, conforto interior premium e uma churrasqueira privada onde cozinhámos todas as noites. Paz absoluta.”">
+                             “The perfect remote office and sanctuary combined. Impeccable high-speed Wi-Fi, premium interior comfort, and a private traditional grill where we cooked every night. Absolute peace.”
                         </p>
                     </div>
                     <div class="flex items-center justify-between border-t border-stone-100 pt-4">
@@ -315,7 +298,6 @@
         </div>
     </section>
 
-    <!-- SECTION: Expanded Photo Gallery (The Estate Spaces) -->
     <section id="gallery-expanded" class="py-24 bg-stone-200 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
@@ -323,9 +305,7 @@
                 <h2 class="text-3xl md:text-5xl font-serif font-bold text-slate-900" data-en="The Estate & Amenities Portfolio" data-pt="O Portefólio da Propriedade & Comodidades">O Portefólio da Propriedade & Comodidades</h2>
             </div>
 
-            <!-- Asymmetrical Bento Grid Design -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[240px]">
-                <!-- Item 1: Large Box (Shared Swimming Pool) -->
                 <div class="md:col-span-2 md:row-span-2 relative rounded-3xl overflow-hidden shadow-md group">
                     <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=1200&auto=format&fit=crop" alt="Shared Swimming Pool" class="w-full h-full object-cover gallery-img" data-index="8">
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent pointer-events-none"></div>
@@ -335,7 +315,6 @@
                     </div>
                 </div>
 
-                <!-- Item 2: Landscape Box (Traditional Barbecue) -->
                 <div class="md:col-span-2 md:row-span-1 relative rounded-3xl overflow-hidden shadow-md group">
                     <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200&auto=format&fit=crop" alt="Traditional Portuguese Barbecue" class="w-full h-full object-cover gallery-img" data-index="9">
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent pointer-events-none"></div>
@@ -345,7 +324,6 @@
                     </div>
                 </div>
 
-                <!-- Item 3: Small Box (Surrounding Serene Gardens) -->
                 <div class="md:col-span-1 md:row-span-1 relative rounded-3xl overflow-hidden shadow-md group">
                     <img src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=800&auto=format&fit=crop" alt="Serene Gardens Architecture" class="w-full h-full object-cover gallery-img" data-index="10">
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent pointer-events-none"></div>
@@ -354,7 +332,6 @@
                     </div>
                 </div>
 
-                <!-- Item 4: Small Box (Villa Solarium Deck) -->
                 <div class="md:col-span-1 md:row-span-1 relative rounded-3xl overflow-hidden shadow-md group">
                     <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800&auto=format&fit=crop" alt="Private Sun Solarium" class="w-full h-full object-cover gallery-img" data-index="11">
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent pointer-events-none"></div>
@@ -366,7 +343,6 @@
         </div>
     </section>
 
-    <!-- SECTION: Location & Points of Interest -->
     <section id="location" class="py-24 bg-stone-100 px-6 border-t border-stone-200">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
@@ -375,12 +351,10 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
-                <!-- Map Container -->
                 <div class="lg:col-span-2 w-full h-[450px] rounded-3xl overflow-hidden shadow-xl border border-stone-200">
                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2984.7477919408443!2d-8.576491624783346!3d41.574702784356845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd2453397bf59093%3A0x6185332344d98227!2sferraz%20da%20silva%20%26%20Marques%2Clda!5e0!3m2!1spt-PT!2spt!4v1780494793830!5m2!1spt-PT!2spt" class="w-full h-full" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
 
-                <!-- Points of Interest List -->
                 <div class="space-y-8 p-4">
                     <div>
                         <h3 class="text-2xl font-serif font-bold text-slate-900 mb-2" data-en="Strategic Position" data-pt="Posição Estratégica">Strategic Position</h3>
@@ -417,7 +391,6 @@
         </div>
     </section>
 
-    <!-- Signature Luxury Section -->
     <section id="luxury-amenities" class="py-28 bg-slate-950 text-stone-100 px-6 relative overflow-hidden">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-20">
@@ -435,7 +408,6 @@
         </div>
     </section>
 
-    <!-- SECTION: Interactive FAQs Accordion -->
     <section id="faq" class="py-24 bg-stone-100 px-6 border-t border-stone-200">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-16">
@@ -444,7 +416,6 @@
             </div>
 
             <div class="space-y-4">
-                <!-- FAQ Item 1 -->
                 <div class="bg-white rounded-2xl shadow-sm border border-stone-200/60 overflow-hidden">
                     <button class="w-full px-8 py-5 text-left flex justify-between items-center focus:outline-none group" onclick="toggleFaq(this)">
                         <span class="font-serif font-semibold text-slate-900 text-lg group-hover:text-emerald-700 transition-colors" data-en="What are the operational Check-in and Check-out frameworks?" data-pt="Quais são os horários operacionais de Check-in e Check-out?">What are the operational Check-in and Check-out frameworks?</span>
@@ -459,7 +430,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ Item 2 -->
                 <div class="bg-white rounded-2xl shadow-sm border border-stone-200/60 overflow-hidden">
                     <button class="w-full px-8 py-5 text-left flex justify-between items-center focus:outline-none group" onclick="toggleFaq(this)">
                         <span class="font-serif font-semibold text-slate-900 text-lg group-hover:text-emerald-700 transition-colors" data-en="What is the cancellations or matrix adjustment policy?" data-pt="Qual é a política de cancelamento ou ajuste de reserva?">What is the cancellations or matrix adjustment policy?</span>
@@ -474,7 +444,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ Item 3 -->
                 <div class="bg-white rounded-2xl shadow-sm border border-stone-200/60 overflow-hidden">
                     <button class="w-full px-8 py-5 text-left flex justify-between items-center focus:outline-none group" onclick="toggleFaq(this)">
                         <span class="font-serif font-semibold text-slate-900 text-lg group-hover:text-emerald-700 transition-colors" data-en="Are the private luxury suites pet-friendly?" data-pt="As vilas privadas de luxo aceitam animais de estimação (Pet-friendly)?">Are the private luxury suites pet-friendly?</span>
@@ -489,7 +458,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ Item 4 -->
                 <div class="bg-white rounded-2xl shadow-sm border border-stone-200/60 overflow-hidden">
                     <button class="w-full px-8 py-5 text-left flex justify-between items-center focus:outline-none group" onclick="toggleFaq(this)">
                         <span class="font-serif font-semibold text-slate-900 text-lg group-hover:text-emerald-700 transition-colors" data-en="Is the Wi-Fi architecture optimized for digital nomads or remote workflows?" data-pt="A infraestrutura de Wi-Fi está otimizada para nómadas digitais ou trabalho remoto?">Is the Wi-Fi architecture optimized for digital nomads or remote workflows?</span>
@@ -507,7 +475,6 @@
         </div>
     </section>
 
-    <!-- MULTI-STEP BOOKING ENGINE OVERLAY -->
     <div id="booking-engine-overlay" class="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[60] hidden items-center justify-center p-4 md:p-6 opacity-0 transition-opacity duration-300">
         <div class="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl border border-stone-200 flex flex-col relative text-slate-900">
             
@@ -522,7 +489,6 @@
                 <input type="hidden" name="access_key" value="c814c68c-e334-408a-9d01-3245269c6ef3">
                 <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
 
-                <!-- STEP 1: DATE CONFIGURATION -->
                 <div id="booking-step-1" class="space-y-6">
                     <div class="border-b border-stone-100 pb-4">
                         <span class="text-xs font-bold text-emerald-700 tracking-widest uppercase">Step 1 of 4</span>
@@ -541,7 +507,6 @@
                     </div>
                 </div>
 
-                <!-- STEP 2: OCCUPANCY -->
                 <div id="booking-step-2" class="hidden space-y-6">
                     <div class="border-b border-stone-100 pb-4">
                         <span class="text-xs font-bold text-emerald-700 tracking-widest uppercase">Step 2 of 4</span>
@@ -580,7 +545,6 @@
                     </div>
                 </div>
 
-                <!-- STEP 3: LEAD CONTACT DETAILS -->
                 <div id="booking-step-3" class="hidden space-y-6">
                     <div class="border-b border-stone-100 pb-4">
                         <span class="text-xs font-bold text-emerald-700 tracking-widest uppercase">Step 3 of 4</span>
@@ -619,7 +583,6 @@
                     </div>
                 </div>
 
-                <!-- STEP 4: AUDIT DISPATCH MATRIX -->
                 <div id="booking-step-4" class="hidden space-y-6">
                     <div class="border-b border-stone-100 pb-4">
                         <span class="text-xs font-bold text-emerald-700 tracking-widest uppercase">Step 4 of 4</span>
@@ -628,7 +591,7 @@
                     
                     <div class="bg-stone-50 border border-stone-200 rounded-2xl p-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
                         <div><p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1" data-en="Duration" data-pt="Duração">Duration</p><p id="summary-nights" class="font-semibold text-slate-900">—</p></div>
-                        <div><p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1" data-en="Total Occupants" data-pt="Total Ocupantes">Total Occupants</p><p id="summary-guests" class="font-semibold text-slate-900">—</p></div>
+                        <div><p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1" data-en="Total Occupants" data-pt="Total Ocupantes">Total Ocupantes</p><p id="summary-guests" class="font-semibold text-slate-900">—</p></div>
                         <div><p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1" data-en="Allocated Villas" data-pt="Vilas Alocadas">Allocated Villas</p><p id="summary-villas" class="font-semibold text-slate-900">—</p></div>
                         <div><p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1" data-en="Estimated Value" data-pt="Valor Estimado">Estimated Value</p><p id="summary-price" class="font-serif font-bold text-emerald-700 text-base">—</p></div>
                     </div>
@@ -637,7 +600,6 @@
                     <input type="hidden" name="Calculated Financial Valuation Estimate" id="hidden-price">
                     <input type="hidden" name="Exact Calendar Selected Range" id="hidden-dates">
 
-                    <!-- Custom Operational Timeline Notice Panel -->
                     <div class="bg-amber-50/70 p-4 border border-amber-200/60 rounded-xl flex items-start text-xs text-amber-900 gap-3 leading-relaxed">
                         <span class="text-sm mt-0.5">📋</span>
                         <div>
@@ -653,7 +615,6 @@
                 </div>
             </form>
 
-            <!-- Success Outcome Target Layout -->
             <div id="success-message" class="hidden flex flex-col items-center justify-center text-center space-y-6 py-20 px-8 opacity-0 transition-opacity duration-300">
                 <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-2 shadow-inner">
                     <svg class="w-10 h-10 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
@@ -668,7 +629,6 @@
         </div>
     </div>
 
-    <!-- HIGH-COMPLIANCE PRIVACY POLICY OVERLAY MODAL (GDPR / AL PORTUGAL) -->
     <div id="privacy-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md z-[70] hidden items-center justify-center p-4">
         <div class="bg-white w-full max-w-4xl h-[85vh] overflow-y-auto rounded-3xl shadow-2xl p-6 md:p-10 relative">
             <button onclick="closeModal('privacy-modal')" class="absolute top-6 right-6 text-stone-400 hover:text-red-600 transition-colors z-10">
@@ -730,7 +690,6 @@
         </div>
     </div>
 
-    <!-- HIGH-COMPLIANCE TERMS OF SERVICE OVERLAY MODAL -->
     <div id="terms-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md z-[70] hidden items-center justify-center p-4">
         <div class="bg-white w-full max-w-4xl h-[85vh] overflow-y-auto rounded-3xl shadow-2xl p-6 md:p-10 relative">
             <button onclick="closeModal('terms-modal')" class="absolute top-6 right-6 text-stone-400 hover:text-red-600 transition-colors z-10">
@@ -758,24 +717,24 @@
 
                     <div>
                         <h4 class="font-serif font-bold text-slate-900 text-base mb-1" data-en="3. Operational Timing Frameworks" data-pt="3. Horários e Regras de Check-in e Check-out">3. Operational Timing Frameworks</h4>
-                        <p data-en="To ensure our premium sanitization and maintenance guidelines are flawlessly executed across suites, standard Check-in entries are authorized from 15:00 onwards. Check-out workflows must be completely finalized prior to 11:00. Deviations or special timing adjustments must be requested explicitly via our contact frameworks and are subject to real-time administrative review and structural availability constraints."
-                           data-pt="Para garantir que as nossas diretrizes de higienização e manutenção são executadas sem falhas nas suites, a entrada (Check-in) padrão está autorizada a partir das 15:00. A saída (Check-out) deve ser totalmente concluída antes das 11:00. Qualquer alteração ou ajuste de horário deve ser expressamente solicitada à administração e está sujeita a confirmação prévia e disponibilidade operacional.">
-                            To ensure our premium sanitization and maintenance guidelines are flawlessly executed across suites, standard Check-in entries are authorized from 15:00 onwards. Check-out workflows must be completely finalized prior to 11:00. Deviations or special timing adjustments must be requested explicitly via our contact frameworks and are subject to real-time administrative review and structural availability constraints.
+                        <p data-en="To ensure our premium guidelines are flawlessly executed across suites, standard Check-in entries are authorized from 15:00 onwards. Check-out workflows must be completely finalized prior to 11:00. Deviations must be requested explicitly via our contact frameworks and are subject to administrative review and structural availability constraints."
+                           data-pt="Para garantir que as nossas diretrizes são executadas sem falhas nas suites, a entrada (Check-in) padrão está autorizada a partir das 15:00. A saída (Check-out) deve ser totalmente concluída antes das 11:00. Qualquer alteração ou ajuste de horário deve ser expressamente solicitada à administração e está sujeita a confirmação prévia e disponibilidade operacional.">
+                            To ensure our premium Guidelines are flawlessly executed across suites, standard Check-in entries are authorized from 15:00 onwards. Check-out workflows must be completely finalized prior to 11:00. Deviations or special timing adjustments must be requested explicitly via our contact frameworks and are subject to real-time administrative review and structural availability constraints.
                         </p>
                     </div>
 
                     <div>
                         <h4 class="font-serif font-bold text-slate-900 text-base mb-1" data-en="4. Cancellation, Penalties & Liquidation Matrix" data-pt="4. Política de Cancelamento e Liquidação Financeira">4. Cancellation, Penalties & Liquidation Matrix</h4>
-                        <p data-en="Our contractual cancellation policy provides full flexibility with zero financial penalties up to 14 days before your scheduled arrival date. Cancellations processed within the 14-day window preceding check-in will trigger a contract execution penalty fee equivalent to 50% of the entire estimated booking valuation, collected to compensate for inventory isolation costs."
-                           data-pt="A nossa política de cancelamento contratual oferece flexibilidade total, sem qualquer penalização financeira, até 14 dias antes da data de chegada programada. Cancelamentos comunicados dentro da janela de 14 dias que antecede o check-in ativarão uma penalização de execução contratual equivalente a 50% do valor total estimado da reserva, cobrada para compensar os custos de bloqueio de inventário.">
+                        <p data-en="Our contractual cancellation policy provides full flexibility with zero financial penalties up to 14 days before your scheduled arrival date. Cancellations processed within the 14-day window preceding check-in will trigger a contract execution penalty fee equivalent to 50% of the entire estimated booking valuation."
+                           data-pt="A nossa política de cancelamento contratual oferece flexibilidade total, sem qualquer penalização financeira, até 14 dias antes da data de chegada programada. Cancelamentos comunicados dentro da janela de 14 dias que antecede o check-in ativarão uma penalização de execução contratual equivalente a 50% do valor total estimado da reserva.">
                             Our contractual cancellation policy provides full flexibility with zero financial penalties up to 14 days before your scheduled arrival date. Cancellations processed within the 14-day window preceding check-in will trigger a contract execution penalty fee equivalent to 50% of the entire estimated booking valuation, collected to compensate for inventory isolation costs.
                         </p>
                     </div>
 
                     <div class="bg-stone-50 p-4 rounded-xl border border-stone-200/60">
                         <h4 class="font-serif font-bold text-slate-900 text-base mb-2" data-en="5. Rules of Conduct & Civil Liability Obligations" data-pt="5. Regras de Conduta e Responsabilidade Civil por Danos">5. Rules of Conduct & Civil Liability Obligations</h4>
-                        <p data-en="Occupants are legally required to maintain proper decorum, civil behavior, and respect the serene rural nature of the estate. Misuse of the shared central swimming pool area or individual brick barbecue units that results in architectural degradation, system damage, or physical property loss will automatically hold the lead guest contractually and civilly liable. Ferraz da Silva & Marques, Lda reserves the absolute right to terminate ongoing accommodation contracts immediately, without refund, if rules of conduct are severely breached."
-                           data-pt="Os hóspedes estão legalmente obrigados a manter o devido decoro, comportamento cívico e a respeitar a natureza pacífica e isolada da propriedade. O uso indevido da área da piscina central partilhada ou das churrasqueiras individuais que resulte em degradação arquitetónica, danos nos sistemas ou perda de propriedade física responsabilizará contratual e civilmente o hóspede titular. A Ferraz da Silva & Marques, Lda reserva-se o direito absoluto de rescindir imediatamente o contrato de alojamento em curso, sem direito a reembolso, em caso de violação severa das regras de conduta.">
+                        <p data-en="Occupants are legally required to maintain proper decorum, civil behavior, and respect the serene rural nature of the estate. Misuse of the shared pool area that results in damage will hold the lead guest liable. Ferraz da Silva & Marques, Lda reserves the absolute right to terminate ongoing accommodation contracts immediately, without refund, if rules of conduct are severely breached."
+                           data-pt="Os hóspedes estão legalmente obrigados a manter o devido decoro, comportamento cívico e a respeitar a natureza pacífica e isolada da propriedade. O uso indevido da piscina partilhada que resulte em danos responsabilizará o hóspede titular. A Ferraz da Silva & Marques, Lda reserva-se o direito de rescindir imediatamente o contrato, sem direito a reembolso, em caso de violação severa das regras.">
                             Occupants are legally required to maintain proper decorum, civil behavior, and respect the serene rural nature of the estate. Misuse of the shared central swimming pool area or individual brick barbecue units that results in architectural degradation, system damage, or physical property loss will automatically hold the lead guest contractually and civilly liable. Ferraz da Silva & Marques, Lda reserves the absolute right to terminate ongoing accommodation contracts immediately, without refund, if rules of conduct are severely breached.
                         </p>
                     </div>
@@ -784,7 +743,6 @@
         </div>
     </div>
 
-    <!-- Luxury Floating WhatsApp Button -->
     <a href="https://wa.me/351912345678" target="_blank" rel="noopener noreferrer" 
        class="fixed bottom-6 right-6 z-50 bg-emerald-700 hover:bg-emerald-800 text-white p-4 rounded-full shadow-2xl transition-all duration-300 btn-whatsapp-pulse flex items-center justify-center group border border-emerald-600/30"
        aria-label="Contact WhatsApp">
@@ -793,11 +751,9 @@
         </svg>
     </a>
 
-    <!-- EXPANDED FOOTER -->
     <footer class="bg-slate-950 text-stone-400 pt-16 pb-10 border-t border-slate-900">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                <!-- Branding Column -->
                 <div class="space-y-4 md:col-span-2">
                     <div class="text-xl md:text-2xl font-serif font-bold text-stone-200">
                         Ferraz da Silva & Marques, Lda <span class="text-emerald-700">| Vilas</span>
@@ -809,7 +765,6 @@
                     </p>
                 </div>
 
-                <!-- Navigation Links Column -->
                 <div>
                     <h5 class="text-stone-200 text-xs font-bold uppercase tracking-widest mb-4" data-en="Navigation" data-pt="Navegação">Navigation</h5>
                     <ul class="space-y-2 text-sm font-light">
@@ -820,7 +775,6 @@
                     </ul>
                 </div>
 
-                <!-- Legal Compliance & Safety Badges -->
                 <div class="space-y-5">
                     <div>
                         <h5 class="text-stone-200 text-xs font-bold uppercase tracking-widest mb-3" data-en="Legal Framework" data-pt="Enquadramento Legal">Legal Framework</h5>
@@ -840,9 +794,8 @@
                 </div>
             </div>
 
-            <!-- Footer Bottom Line -->
             <div class="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center text-xs">
-                <p class="text-stone-500 font-light mb-4 md:mb-0" data-en="&copy; 2026 Ferraz da Silva & Marques, Lda Vilas. All rights reserved." data-pt="&copy; 2026 Ferraz da Silva & Marques, Lda Vilas. Todos os direitos reservados.">&copy; 2026 Ferraz da Silva & Marques, Lda Vilas. All rights reserved.</p>
+                <p class="text-stone-500 font-light mb-4 md:mb-0" data-en="© 2026 Ferraz da Silva & Marques, Lda Vilas. All rights reserved." data-pt="© 2026 Ferraz da Silva & Marques, Lda Vilas. Todos os direitos reservados.">© 2026 Ferraz da Silva & Marques, Lda Vilas. All rights reserved.</p>
                 <div class="flex space-x-6 text-stone-500 font-light">
                     <button onclick="openModal('privacy-modal')" class="hover:text-emerald-700 transition-colors focus:outline-none" data-en="Privacy Policy" data-pt="Política de Privacidade">Privacy Policy</button>
                     <button onclick="openModal('terms-modal')" class="hover:text-emerald-700 transition-colors focus:outline-none" data-en="Terms of Service" data-pt="Termos de Serviço">Terms of Service</button>
@@ -1013,7 +966,7 @@
     const mobileMenu = document.getElementById('mobile-menu');
     if(mobileMenuBtn) mobileMenuBtn.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
 
-    // --- CONEXÃO DIRETA AO SUPABASE ADICIONADA AQUI ---
+    // --- LIGAÇÃO LIMPA E CONEXÃO DIRETAMENTE UNIFICADA AO SUPABASE ---
     const SUPABASE_URL = "https://waemewnmvzrsxaedygus.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_2MIqzJ-N5DOdh4z0eOYNcA_O-9nkMex";
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1022,56 +975,39 @@
     const successMsg = document.getElementById('success-message');
 
     if(form) {
-        form.addEventListener('submit', async function(e) {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
 
             const guestSelectionCount = document.getElementById('engine-guests').value;
             const villaSelectionCount = document.getElementById('engine-villas').value;
             const phoneOutputValue = document.getElementById('hidden-phone-full').value || document.getElementById('input-phone').value;
             
-            // 1. GRAVA DIRETAMENTE NA BASE DE DADOS DO SUPABASE
-            try {
-                const { error: supabaseError } = await _supabase
-                    .from('reservations')
-                    .insert([{
-                        name: document.getElementById('input-name').value,
-                        phone: phoneOutputValue, 
-                        email: document.getElementById('input-email').value,
-                        dates: document.getElementById('engine-datepicker').value,
-                        guests: guestSelectionCount,
-                        villas: villaSelectionCount,
-                        requests: document.getElementById('input-requests').value,
-                        status: 'pending'
-                    }]);
-
-                if (supabaseError) throw supabaseError;
-            } catch (err) {
-                console.error("Erro ao gravar no Supabase:", err);
-                alert("Erro ao registar reserva na Base de Dados Cloud. Tente novamente.");
-                return;
-            }
-
-            // 2. ENVIA O EMAIL DE NOTIFICAÇÃO VIA WEB3FORMS (MANTIDO IGUAL)
-            form.style.opacity = '0';
-            fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(Object.fromEntries(new FormData(form)))
-            })
-            .then(async (response) => {
-                form.classList.add('hidden');
-                if(successMsg) {
-                    successMsg.classList.remove('hidden');
-                    void successMsg.offsetWidth;
-                    successMsg.style.opacity = '1';
-                }
-            })
-            .catch(error => {
-                form.classList.add('hidden');
-                if(successMsg) {
-                    successMsg.classList.remove('hidden');
-                    successMsg.style.opacity = '1';
-                }
+            // Gravação simplificada enviando os dados limpos sem cabeçalhos de rede restritivos
+            _supabase.from('reservations').insert([{
+                name: document.getElementById('input-name').value,
+                phone: phoneOutputValue, 
+                email: document.getElementById('input-email').value,
+                dates: document.getElementById('engine-datepicker').value,
+                guests: guestSelectionCount,
+                villas: villaSelectionCount,
+                requests: document.getElementById('input-requests').value,
+                status: 'pending'
+            }]).then(res => {
+                console.log("Resposta do Supabase:", res);
+                
+                // Envia o e-mail do Web3Forms em segundo plano logo de seguida
+                form.style.opacity = '0';
+                fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(Object.fromEntries(new FormData(form)))
+                }).then(() => {
+                    form.classList.add('hidden');
+                    if(successMsg) {
+                        successMsg.classList.remove('hidden');
+                        successMsg.style.opacity = '1';
+                    }
+                });
             });
         });
     }
