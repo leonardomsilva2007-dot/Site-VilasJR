@@ -8,7 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
-    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <!-- Flatpickr Advanced Calendar Engine CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -851,275 +852,267 @@
     </footer>
 
     <script>
-        let bookedVillaInventory = {};
-        try {
-            bookedVillaInventory = JSON.parse(localStorage.getItem('bookedVillaInventory')) || {};
-        } catch(e) { console.log("Storage isolation tracking active."); }
+    let bookedVillaInventory = {};
+    try {
+        bookedVillaInventory = JSON.parse(localStorage.getItem('bookedVillaInventory')) || {};
+    } catch(e) { console.log("Storage isolation tracking active."); }
 
-        let iti;
-        window.addEventListener('DOMContentLoaded', () => {
-            try {
-                const phoneInputField = document.getElementById("input-phone");
-                if(phoneInputField) {
-                    iti = window.intlTelInput(phoneInputField, {
-                        initialCountry: "pt", 
-                        separateDialCode: true, 
-                        strictMode: true, 
-                        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js"
-                    });
+    let iti;
+    window.addEventListener('DOMContentLoaded', () => {
+        try {
+            const phoneInputField = document.getElementById("input-phone");
+            if(phoneInputField) {
+                iti = window.intlTelInput(phoneInputField, {
+                    initialCountry: "pt", 
+                    separateDialCode: true, 
+                    strictMode: true, 
+                    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js"
+                });
+            }
+        } catch(err) { console.log("Flag library map compilation error."); }
+    });
+
+    let pickerInstance;
+    try {
+        pickerInstance = flatpickr("#engine-datepicker", {
+            mode: "range",
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            onDayCreate: function(dObj, dStr, fp, dayElem) {
+                const localDate = new Date(dayElem.dateObj.getTime() - dayElem.dateObj.getTimezoneOffset() * 60000);
+                const dateKey = localDate.toISOString().slice(0, 10);
+                const villasOccupied = bookedVillaInventory[dateKey] || 0;
+                if (villasOccupied >= 6) {
+                    dayElem.classList.add("calendar-fully-booked");
+                } else if (villasOccupied >= 4) {
+                    dayElem.classList.add("calendar-almost-full");
                 }
-            } catch(err) { console.log("Flag library map compilation error."); }
+            },
+            onChange: function() { runEngineCalculations(); }
         });
+    } catch(err) { console.log("Calendar framework map sandbox catch."); }
 
-        let pickerInstance;
-        try {
-            pickerInstance = flatpickr("#engine-datepicker", {
-                mode: "range",
-                minDate: "today",
-                dateFormat: "Y-m-d",
-                onDayCreate: function(dObj, dStr, fp, dayElem) {
-                    const localDate = new Date(dayElem.dateObj.getTime() - dayElem.dateObj.getTimezoneOffset() * 60000);
-                    const dateKey = localDate.toISOString().slice(0, 10);
-                    const villasOccupied = bookedVillaInventory[dateKey] || 0;
-                    if (villasOccupied >= 6) {
-                        dayElem.classList.add("calendar-fully-booked");
-                    } else if (villasOccupied >= 4) {
-                        dayElem.classList.add("calendar-almost-full");
-                    }
-                },
-                onChange: function() { runEngineCalculations(); }
-            });
-        } catch(err) { console.log("Calendar framework map sandbox catch."); }
+    const engineOverlay = document.getElementById('booking-engine-overlay');
 
-        const engineOverlay = document.getElementById('booking-engine-overlay');
+    function openBookingEngine() {
+        if(!engineOverlay) return;
+        engineOverlay.classList.remove('hidden');
+        engineOverlay.classList.add('flex'); 
+        setTimeout(() => { engineOverlay.classList.remove('opacity-0'); }, 10);
+        document.body.style.overflow = 'hidden';
+        runEngineCalculations();
+    }
 
-        function openBookingEngine() {
-            if(!engineOverlay) return;
-            engineOverlay.classList.remove('hidden');
-            engineOverlay.classList.add('flex'); 
-            setTimeout(() => { engineOverlay.classList.remove('opacity-0'); }, 10);
-            document.body.style.overflow = 'hidden';
-            runEngineCalculations();
+    function closeBookingEngine() {
+        if(!engineOverlay) return;
+        engineOverlay.classList.add('opacity-0');
+        setTimeout(() => { 
+            engineOverlay.classList.add('hidden'); 
+            engineOverlay.classList.remove('flex'); 
+            resetFormWizard();
+        }, 300);
+        document.body.style.overflow = 'auto';
+    }
+
+    function goToStep(stepNum) {
+        if (stepNum === 2 && pickerInstance && pickerInstance.selectedDates.length < 2) {
+            alert(currentLang === 'en' ? "Please choose both check-in and check-out dates on the calendar first." : "Por favor, selecione as datas de check-in e check-out no calendário primeiro.");
+            return;
         }
 
-        function closeBookingEngine() {
-            if(!engineOverlay) return;
-            engineOverlay.classList.add('opacity-0');
-            setTimeout(() => { 
-                engineOverlay.classList.add('hidden'); 
-                engineOverlay.classList.remove('flex'); 
-                resetFormWizard();
-            }, 300);
-            document.body.style.overflow = 'auto';
-        }
+        if (stepNum === 4) {
+            const nameVal = document.getElementById('input-name').value.trim();
+            const emailInput = document.getElementById('input-email');
 
-        function goToStep(stepNum) {
-            if (stepNum === 2 && pickerInstance && pickerInstance.selectedDates.length < 2) {
-                alert(currentLang === 'en' ? "Please choose both check-in and check-out dates on the calendar first." : "Por favor, selecione as datas de check-in e check-out no calendário primeiro.");
+            if (!nameVal || !emailInput.value.trim() || !emailInput.checkValidity()) {
+                alert(currentLang === 'en' ? "Please complete all mandatory contact indicators (*) correctly before proceeding." : "Por favor, preencha todos os campos de contacto obrigatórios (*) de forma correta antes de avançar.");
                 return;
             }
 
-            if (stepNum === 4) {
-                const nameVal = document.getElementById('input-name').value.trim();
-                const emailInput = document.getElementById('input-email');
-
-                if (!nameVal || !emailInput.value.trim() || !emailInput.checkValidity()) {
-                    alert(currentLang === 'en' ? "Please complete all mandatory contact indicators (*) correctly before proceeding." : "Por favor, preencha todos os campos de contacto obrigatórios (*) de forma correta antes de avançar.");
-                    return;
-                }
-
-                if(iti && !iti.isValidNumber()) {
-                    alert(currentLang === 'en' ? "The input phone number length or dialing schema is invalid for the selected country flag format." : "O número de telefone inserido está incompleto ou é inválido para o país selecionado.");
-                    return;
-                }
-                
-                if(iti) document.getElementById('hidden-phone-full').value = iti.getNumber();
+            if(iti && !iti.isValidNumber()) {
+                alert(currentLang === 'en' ? "The input phone number length or dialing schema is invalid for the selected country flag format." : "O número de telefone inserido está incompleto ou é inválido para o país selecionado.");
+                return;
             }
-
-            for (let i = 1; i <= 4; i++) {
-                const step = document.getElementById(`booking-step-${i}`);
-                if(step) step.classList.add('hidden');
-            }
-            const targetStep = document.getElementById(`booking-step-${stepNum}`);
-            if(targetStep) targetStep.classList.remove('hidden');
-            runEngineCalculations();
-        }
-
-        function resetFormWizard() {
-            const formObj = document.getElementById('contact-form');
-            if(formObj) formObj.reset();
-            if(pickerInstance) pickerInstance.clear();
-            goToStep(1);
-        }
-
-        function runEngineCalculations() {
-            const guestCount = parseInt(document.getElementById('engine-guests').value) || 4;
-            const villaSelectEl = document.getElementById('engine-villas');
-            let villaCount = parseInt(villaSelectEl.value) || 1;
             
-            const minRequiredVillas = Math.ceil(guestCount / 4);
-            if (villaCount < minRequiredVillas) {
-                villaSelectEl.value = minRequiredVillas;
-                villaCount = minRequiredVillas;
-            }
-
-            const alertTextEl = document.getElementById('engine-alert-text');
-            if(alertTextEl) {
-                if (currentLang === 'en') {
-                    alertTextEl.innerHTML = `Our estate has 6 premium 2-bedroom villas. Based on your group size of <strong>${guestCount} people</strong>, we have automatically allocated <strong>${villaCount} private villa(s)</strong> (€200/night per villa) to guarantee luxury spatial comfort.`;
-                } else {
-                    alertTextEl.innerHTML = `A nossa propriedade dispõe de 6 vilas T2 premium. Para o seu grupo de <strong>${guestCount} pessoas</strong>, alocámos automaticamente <strong>${villaCount} vila(s) privada(s)</strong> (200€/noite por vila) para garantir o máximo conforto.`;
-                }
-            }
-
-            let nightsCount = 0;
-            if (pickerInstance && pickerInstance.selectedDates.length === 2) {
-                const diffTime = Math.abs(pickerInstance.selectedDates[1] - pickerInstance.selectedDates[0]);
-                nightsCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            }
-
-            const estimatedTotalPrice = nightsCount * villaCount * 200;
-
-            document.getElementById('summary-nights').textContent = nightsCount > 0 ? `${nightsCount} ${currentLang === 'en' ? 'Nights' : 'Noites'}` : '—';
-            document.getElementById('summary-guests').textContent = `${guestCount} ${currentLang === 'en' ? 'Guests' : 'Hóspedes'}`;
-            document.getElementById('summary-villas').textContent = `${villaCount} ${currentLang === 'en' ? 'Villas' : 'Vilas'}`;
-            document.getElementById('summary-price').textContent = estimatedTotalPrice > 0 ? `${estimatedTotalPrice}€` : '—';
-
-            document.getElementById('hidden-nights').value = `${nightsCount} Nights`;
-            document.getElementById('hidden-price').value = `${estimatedTotalPrice} EUR Estimated`;
-            document.getElementById('hidden-dates').value = document.getElementById('engine-datepicker').value;
+            if(iti) document.getElementById('hidden-phone-full').value = iti.getNumber();
         }
 
-        let currentLang = 'en';
-        const langToggleBtn = document.getElementById('lang-switcher');
-        const langToggleMobileBtn = document.getElementById('lang-switcher-mobile');
+        for (let i = 1; i <= 4; i++) {
+            const step = document.getElementById(`booking-step-${i}`);
+            if(step) step.classList.add('hidden');
+        }
+        const targetStep = document.getElementById(`booking-step-${stepNum}`);
+        if(targetStep) targetStep.classList.remove('hidden');
+        runEngineCalculations();
+    }
 
-        function switchLanguage() {
-            currentLang = (currentLang === 'en') ? 'pt' : 'en';
-            langToggleBtn.textContent = currentLang.toUpperCase();
-            if(langToggleMobileBtn) langToggleMobileBtn.textContent = currentLang.toUpperCase();
+    function resetFormWizard() {
+        const formObj = document.getElementById('contact-form');
+        if(formObj) formObj.reset();
+        if(pickerInstance) pickerInstance.clear();
+        goToStep(1);
+    }
 
-            document.querySelectorAll('[data-en]').forEach(element => {
-                const targetText = element.getAttribute(`data-${currentLang}`);
-                if (targetText) element.innerHTML = targetText;
-            });
-            runEngineCalculations();
+    function runEngineCalculations() {
+        const guestCount = parseInt(document.getElementById('engine-guests').value) || 4;
+        const villaSelectEl = document.getElementById('engine-villas');
+        let villaCount = parseInt(villaSelectEl.value) || 1;
+        
+        const minRequiredVillas = Math.ceil(guestCount / 4);
+        if (villaCount < minRequiredVillas) {
+            villaSelectEl.value = minRequiredVillas;
+            villaCount = minRequiredVillas;
         }
 
-        if(langToggleBtn) langToggleBtn.addEventListener('click', switchLanguage);
-
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        if(mobileMenuBtn) mobileMenuBtn.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
-
-        const form = document.getElementById('contact-form');
-        const successMsg = document.getElementById('success-message');
-
-        if(form) {
-            form.addEventListener('submit', function(e) {
-                if(form.querySelector('[name="access_key"]').value === "YOUR_ACCESS_KEY_HERE") {
-                    e.preventDefault();
-                    alert("Setup Alert: Please make sure your copied access key token is placed into line 125 of your index.html file code!");
-                    return;
-                }
-
-                e.preventDefault();
-
-                let localReservations = [];
-                try {
-                    localReservations = JSON.parse(localStorage.getItem('localReservations')) || [];
-                } catch(err) { console.log("Cache reading error sandbox matrix."); }
-
-                const guestSelectionCount = document.getElementById('engine-guests').value;
-                const villaSelectionCount = document.getElementById('engine-villas').value;
-                const phoneOutputValue = document.getElementById('hidden-phone-full').value || document.getElementById('input-phone').value;
-                
-                const newReservationRecord = {
-                    id: Date.now(),
-                    name: document.getElementById('input-name').value,
-                    phone: phoneOutputValue, 
-                    email: document.getElementById('input-email').value,
-                    dates: document.getElementById('engine-datepicker').value,
-                    guests: guestSelectionCount,
-                    villas: villaSelectionCount,
-                    requests: document.getElementById('input-requests').value,
-                    status: 'pending'
-                };
-                
-                localReservations.push(newReservationRecord);
-                try {
-                    localStorage.setItem('localReservations', JSON.stringify(localReservations));
-                } catch(err) { console.log("Sandbox write protection caught."); }
-
-                form.style.opacity = '0';
-
-                fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify(Object.fromEntries(new FormData(form)))
-                })
-                .then(async (response) => {
-                    if (response.status == 200) {
-                        form.classList.add('hidden');
-                        if(successMsg) {
-                            successMsg.classList.remove('hidden');
-                            void successMsg.offsetWidth;
-                            successMsg.style.opacity = '1';
-                        }
-                    } else {
-                        alert("Submission error. Please check configurations.");
-                        form.style.opacity = '1';
-                    }
-                })
-                .catch(error => {
-                    form.classList.add('hidden');
-                    if(successMsg) {
-                        successMsg.classList.remove('hidden');
-                        successMsg.style.opacity = '1';
-                    }
-                });
-            });
-        }
-
-        // Accordion Core Engine
-        function toggleFaq(button) {
-            const content = button.nextElementSibling;
-            const statusIndicator = button.querySelector('span:last-child');
-            
-            document.querySelectorAll('.faq-content').forEach(item => {
-                if (item !== content) {
-                    item.style.maxHeight = null;
-                    item.previousElementSibling.querySelector('span:last-child').textContent = '+';
-                }
-            });
-
-            if (content.style.maxHeight) {
-                content.style.maxHeight = null;
-                statusIndicator.textContent = '+';
+        const alertTextEl = document.getElementById('engine-alert-text');
+        if(alertTextEl) {
+            if (currentLang === 'en') {
+                alertTextEl.innerHTML = `Our estate has 6 premium 2-bedroom villas. Based on your group size of <strong>${guestCount} people</strong>, we have automatically allocated <strong>${villaCount} private villa(s)</strong> (€200/night per villa) to guarantee luxury spatial comfort.`;
             } else {
-                content.style.maxHeight = content.scrollHeight + "px";
-                statusIndicator.textContent = '−';
+                alertTextEl.innerHTML = `A nossa propriedade dispõe de 6 vilas T2 premium. Para o seu grupo de <strong>${guestCount} pessoas</strong>, alocámos automaticamente <strong>${villaCount} vila(s) privada(s)</strong> (200€/noite por vila) para garantir o máximo conforto.`;
             }
         }
 
-        // Dynamic Modal Handlers for Privacy & Terms
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if(!modal) return;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
+        let nightsCount = 0;
+        if (pickerInstance && pickerInstance.selectedDates.length === 2) {
+            const diffTime = Math.abs(pickerInstance.selectedDates[1] - pickerInstance.selectedDates[0]);
+            nightsCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
 
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if(!modal) return;
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            if(document.getElementById('booking-engine-overlay').classList.contains('hidden')) {
-                document.body.style.overflow = 'auto';
+        const estimatedTotalPrice = nightsCount * villaCount * 200;
+
+        document.getElementById('summary-nights').textContent = nightsCount > 0 ? `${nightsCount} ${currentLang === 'en' ? 'Nights' : 'Noites'}` : '—';
+        document.getElementById('summary-guests').textContent = `${guestCount} ${currentLang === 'en' ? 'Guests' : 'Hóspedes'}`;
+        document.getElementById('summary-villas').textContent = `${villaCount} ${currentLang === 'en' ? 'Villas' : 'Vilas'}`;
+        document.getElementById('summary-price').textContent = estimatedTotalPrice > 0 ? `${estimatedTotalPrice}€` : '—';
+
+        document.getElementById('hidden-nights').value = `${nightsCount} Nights`;
+        document.getElementById('hidden-price').value = `${estimatedTotalPrice} EUR Estimated`;
+        document.getElementById('hidden-dates').value = document.getElementById('engine-datepicker').value;
+    }
+
+    let currentLang = 'en';
+    const langToggleBtn = document.getElementById('lang-switcher');
+    const langToggleMobileBtn = document.getElementById('lang-switcher-mobile');
+
+    function switchLanguage() {
+        currentLang = (currentLang === 'en') ? 'pt' : 'en';
+        langToggleBtn.textContent = currentLang.toUpperCase();
+        if(langToggleMobileBtn) langToggleMobileBtn.textContent = currentLang.toUpperCase();
+
+        document.querySelectorAll('[data-en]').forEach(element => {
+            const targetText = element.getAttribute(`data-${currentLang}`);
+            if (targetText) element.innerHTML = targetText;
+        });
+        runEngineCalculations();
+    }
+
+    if(langToggleBtn) langToggleBtn.addEventListener('click', switchLanguage);
+
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if(mobileMenuBtn) mobileMenuBtn.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+
+    // --- CONEXÃO DIRETA AO SUPABASE ADICIONADA AQUI ---
+    const SUPABASE_URL = "https://waemewnmvzrsxaedygus.supabase.co"; 
+    const SUPABASE_KEY = "sb_publishable_2MIqzJ-N5DOdh4z0eOYNcA_O-9nkMex";
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const form = document.getElementById('contact-form');
+    const successMsg = document.getElementById('success-message');
+
+    if(form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const guestSelectionCount = document.getElementById('engine-guests').value;
+            const villaSelectionCount = document.getElementById('engine-villas').value;
+            const phoneOutputValue = document.getElementById('hidden-phone-full').value || document.getElementById('input-phone').value;
+            
+            // 1. GRAVA DIRETAMENTE NA BASE DE DADOS DO SUPABASE
+            try {
+                const { error: supabaseError } = await _supabase
+                    .from('reservations')
+                    .insert([{
+                        name: document.getElementById('input-name').value,
+                        phone: phoneOutputValue, 
+                        email: document.getElementById('input-email').value,
+                        dates: document.getElementById('engine-datepicker').value,
+                        guests: guestSelectionCount,
+                        villas: villaSelectionCount,
+                        requests: document.getElementById('input-requests').value,
+                        status: 'pending'
+                    }]);
+
+                if (supabaseError) throw supabaseError;
+            } catch (err) {
+                console.error("Erro ao gravar no Supabase:", err);
+                alert("Erro ao registar reserva na Base de Dados Cloud. Tente novamente.");
+                return;
             }
+
+            // 2. ENVIA O EMAIL DE NOTIFICAÇÃO VIA WEB3FORMS (MANTIDO IGUAL)
+            form.style.opacity = '0';
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(Object.fromEntries(new FormData(form)))
+            })
+            .then(async (response) => {
+                form.classList.add('hidden');
+                if(successMsg) {
+                    successMsg.classList.remove('hidden');
+                    void successMsg.offsetWidth;
+                    successMsg.style.opacity = '1';
+                }
+            })
+            .catch(error => {
+                form.classList.add('hidden');
+                if(successMsg) {
+                    successMsg.classList.remove('hidden');
+                    successMsg.style.opacity = '1';
+                }
+            });
+        });
+    }
+
+    function toggleFaq(button) {
+        const content = button.nextElementSibling;
+        const statusIndicator = button.querySelector('span:last-child');
+        
+        document.querySelectorAll('.faq-content').forEach(item => {
+            if (item !== content) {
+                item.style.maxHeight = null;
+                item.previousElementSibling.querySelector('span:last-child').textContent = '+';
+            }
+        });
+
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+            statusIndicator.textContent = '+';
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            statusIndicator.textContent = '−';
         }
-    </script>
+    }
+
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if(!modal) return;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if(!modal) return;
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        if(document.getElementById('booking-engine-overlay').classList.contains('hidden')) {
+            document.body.style.overflow = 'auto';
+        }
+    }
+</script>
 </body>
 </html>
